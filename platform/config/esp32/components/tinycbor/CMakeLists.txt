@@ -1,0 +1,8 @@
+set(STK_PLATFORM_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../..)
+
+idf_component_register(
+    SRCS ${CBOR_SOURCES}
+    INCLUDE_DIRS ${STK_PLATFORM_DIR}/third-party/tinycbor/src
+)
+
+idf_component_set_property(${COMPONENT_NAME} WHOLE_ARCHIVE ON)

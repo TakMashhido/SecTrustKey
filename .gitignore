@@ -1,0 +1,14 @@
+build*/
+*__pycache__*
+.DS_Store
+
+# Fetched by platform/cmake/deps.cmake at configure time.
+platform/third-party/
+
+# Local test and packaging output.
+dist/
+*.pyc
+
+# ESP-IDF component manager output; dependencies.lock stays tracked.
+managed_components/
+

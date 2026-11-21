@@ -1,0 +1,41 @@
+idf_component_register(
+    SRCS
+        board.cpp
+        backup.cpp
+        backup_codec.c
+        backup_store.c
+        input.cpp
+        display.cpp
+        audio.cpp
+        power.cpp
+        model.cpp
+        settings.cpp
+        text.cpp
+        presence_bridge.cpp
+        ui.cpp
+        credential_service.c
+        keyboard/Keyboard.cpp
+        keyboard/KeyboardReader/IOMatrix.cpp
+        keyboard/KeyboardReader/TCA8418.cpp
+        Adafruit_TCA8418/Adafruit_TCA8418.cpp
+    INCLUDE_DIRS
+        .
+        keyboard
+        Adafruit_TCA8418
+    PRIV_INCLUDE_DIRS
+        ../apps/fido      # stk_oath_screen.h, stk_totp.h for the Codes screen
+    REQUIRES
+        platform
+        m5unified
+        m5gfx
+        esp_tinyusb
+        driver
+        esp_timer
+        nvs_flash
+        esp_partition
+        esp_hw_support
+        fatfs
+        sdmmc
+        mbedtls
+        espcoredump
+)
