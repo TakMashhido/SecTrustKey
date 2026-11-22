@@ -1,0 +1,156 @@
+# SecTrustKey documentation site — Koustav Kumar Mondal <erkoustavkumar@gmail.com>
+#   pip install -r requirements.txt
+#   mkdocs serve                          # live preview on http://127.0.0.1:8088
+#   mkdocs build --strict                 # static site in ./site
+# Published at https://koustav.isroot.in/SecTrustKey/ by .github/workflows/deploy.yml
+site_name: SecTrustKey
+site_url: https://koustav.isroot.in/SecTrustKey/
+repo_url: https://github.com/TakMashhido/SecTrustKey
+repo_name: TakMashhido/SecTrustKey
+edit_uri: ""                            # the pages live on the docs branch, not next to the firmware
+site_description: >-
+  SecTrustKey: open-source FIDO2 passkey, OpenPGP, PIV and TOTP security key firmware for the
+  M5Stack Cardputer ADV (ESP32-S3), with on-screen confirmation, a startup passphrase that encrypts
+  keys at rest, encrypted microSD backups and a security health check.
+site_author: Koustav Kumar Mondal
+dev_addr: 127.0.0.1:8088
+copyright: "© 2026 Koustav Kumar Mondal · erkoustavkumar@gmail.com · AGPL-3.0"
+
+theme:
+  name: material
+  language: en
+  font:
+    text: Inter
+    code: JetBrains Mono
+  icon:
+    logo: material/shield-key
+    repo: material/github
+  favicon: assets/favicon.svg
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - navigation.instant
+    - navigation.tracking
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
+
+extra_css:
+  - stylesheets/extra.css
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])'
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra:
+  generator: false
+  social:
+    - icon: material/github
+      link: https://github.com/TakMashhido/SecTrustKey
+      name: SecTrustKey on GitHub
+    - icon: material/web
+      link: https://koustav.isroot.in/
+      name: Koustav Kumar Mondal
+    - icon: material/email
+      link: mailto:erkoustavkumar@gmail.com
+      name: Contact
+
+nav:
+  - Home: index.md
+  - Getting started:
+      - getting-started/index.md
+      - Install from a release: getting-started/install.md
+      - Build from source: getting-started/build.md
+      - First steps: getting-started/first-steps.md
+  - User guide:
+      - guide/index.md
+      - Using the device: guide/device.md
+      - Passkeys (FIDO2): guide/passkeys.md
+      - OpenPGP and GnuPG: guide/openpgp.md
+      - SSH and Git signing: guide/ssh-git.md
+      - PIV smart card: guide/piv.md
+      - TOTP codes: guide/codes.md
+      - Health check: guide/health.md
+      - Startup passphrase: guide/passphrase.md
+      - SD backup and restore: guide/backup.md
+  - Concepts:
+      - concepts/index.md
+      - Architecture: concepts/architecture.md
+      - Storage and key store: concepts/storage.md
+      - Boot and unlock: concepts/boot.md
+      - Security model: concepts/security.md
+  - Customize:
+      - customize/index.md
+      - USB identity: customize/usb-identity.md
+      - About page and credit: customize/branding.md
+      - Debug build: customize/debug-build.md
+  - Reference:
+      - reference/index.md
+      - Build options: reference/build-options.md
+      - Flash layout: reference/flash-layout.md
+      - Factory defaults: reference/defaults.md
+      - USB interfaces: reference/usb.md
+      - Clock tool: reference/stk-time.md
+  - Troubleshooting: troubleshooting.md
+  - FAQ: faq.md
+  - Release notes: changelog.md
+  - License & credits: license.md

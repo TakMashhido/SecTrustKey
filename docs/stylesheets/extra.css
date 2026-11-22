@@ -1,0 +1,48 @@
+/* SecTrustKey docs theme — Koustav Kumar Mondal <erkoustavkumar@gmail.com> */
+:root {
+  --md-primary-fg-color: #0b7d6c;
+  --md-primary-fg-color--light: #12a08a;
+  --md-primary-fg-color--dark: #075e51;
+  --md-accent-fg-color: #6b4fd8;
+  --stk-surface: #fbfcfd;
+  --stk-border: #e1e5ec;
+}
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #0e8c78;
+  --md-primary-fg-color--light: #2ec4a8;
+  --md-primary-fg-color--dark: #0a6a5b;
+  --md-accent-fg-color: #9a85f0;
+  --md-default-bg-color: #12161f;
+  --stk-surface: #1a1f2b;
+  --stk-border: #2c3444;
+}
+.md-typeset h1 { font-weight: 700; letter-spacing: -0.02em; }
+.md-typeset h2 { font-weight: 650; letter-spacing: -0.01em; }
+/* hero */
+.stk-hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 1.6rem; align-items: center; padding: 1.6rem 0 1rem; }
+.stk-hero h1 { font-size: 2.3rem; line-height: 1.15; margin-bottom: .6rem; }
+.stk-hero p.lead { font-size: 1.02rem; color: var(--md-default-fg-color--light); }
+.stk-hero .md-button { margin: .4rem .5rem .4rem 0; }
+.stk-hero img { border-radius: 14px; }
+@media (max-width: 60em) { .stk-hero { grid-template-columns: minmax(0, 1fr); } }
+/* cards */
+.stk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: .9rem; margin: 1.2rem 0; }
+.stk-card { border: 1px solid var(--stk-border); border-radius: 12px; padding: 1rem 1.1rem; background: var(--stk-surface); }
+.stk-card h3 { margin: 0 0 .35rem; font-size: .95rem; }
+.stk-card p { margin: 0; font-size: .78rem; color: var(--md-default-fg-color--light); }
+/* key figures */
+.md-typeset .stk-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .8rem; margin: 1rem 0; }
+.md-typeset .stk-kpi div { border: 1px solid var(--stk-border); border-radius: 12px; padding: .8rem 1rem; background: var(--stk-surface); }
+.md-typeset .stk-kpi b { display: block; font-size: 1.5rem; line-height: 1.2; }
+.md-typeset .stk-kpi span { font-size: .72rem; color: var(--md-default-fg-color--light); }
+/* device screens */
+.md-typeset .stk-screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: .9rem; margin: 1rem 0; }
+.md-typeset .stk-screens figure { margin: 0; }
+.md-typeset .stk-screens img, .md-typeset img.stk-screen { border-radius: 12px; max-width: 100%; }
+.md-typeset figure.stk-screen-one { max-width: 30rem; }
+/* diagrams: keep a white card so the white-background graphics read in both modes */
+.md-typeset img.stk-diagram { border-radius: 10px; border: 1px solid var(--stk-border); background: #fff; }
+[data-md-color-scheme="slate"] .md-typeset img.stk-diagram { padding: 6px; }
+.md-typeset figure figcaption { font-size: .74rem; color: var(--md-default-fg-color--light); max-width: 46rem; margin: .4rem auto 0; }
+.md-typeset table:not([class]) { font-size: .74rem; }
+.md-typeset table:not([class]) th { white-space: nowrap; }
