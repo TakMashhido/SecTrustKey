@@ -7,10 +7,13 @@ description: Flash SecTrustKey onto the M5Stack Cardputer ADV from a GitHub rele
 
 Every [release](https://github.com/TakMashhido/SecTrustKey/releases) carries a ready-made image, so you do not need to build anything.
 
+!!! tip "Using M5 Launcher?"
+    Install SecTrustKey from Launcher's SD menu instead and keep your other apps: see [M5 Launcher and M5Burner](launcher.md). This page covers flashing the whole chip.
+
 | File | Use it for |
 |---|---|
-| `sectrustkey-vX.Y.Z-cardputer-adv.bin` | **First install.** One image for address `0x0`: bootloader, partition table, boot data and firmware. |
-| `sectrustkey-vX.Y.Z-app.bin` | **Updates.** Only the firmware, for address `0x20000`; your keys are kept. |
+| `sectrustkey-vX.Y.Z-cardputer-adv.bin` | **First install**, with esptool, the browser flasher, M5Burner or M5 Launcher. One image for address `0x0`: bootloader, partition table, boot data, firmware and the 4 KB installer pad of the key storage. |
+| `sectrustkey-vX.Y.Z-app.bin` | **Updates** of a device flashed with esptool. Only the firmware, for address `0x20000`; your keys are kept. |
 | `bootloader.bin`, `partition-table.bin`, `ota_data_initial.bin` | The separate parts, if you prefer to flash them one by one. |
 | `SHA256SUMS.txt` | Checksums of all of the above. |
 
@@ -46,17 +49,17 @@ Keep both files somewhere safe. [Roll back](#roll-back) explains how to write it
 
     ```bash
     esptool.py --chip esp32s3 --baud 921600 --after watchdog_reset \
-      write_flash --erase-all 0x0 sectrustkey-v1.0.0-cardputer-adv.bin
+      write_flash --erase-all 0x0 sectrustkey-v1.1.0-cardputer-adv.bin
     ```
 
-    `--erase-all` clears the whole chip, so no data from the previous firmware is mistaken for a key store. `--after watchdog_reset` starts the firmware when flashing is done; on this board a reset through the serial line would leave it in download mode.
+    `--erase-all` clears the whole chip, so the key storage starts empty. Without it, the first start shows **Set up storage?** and waits for ++enter++ before preparing the area. `--after watchdog_reset` starts the firmware when flashing is done; on this board a reset through the serial line would leave it in download mode.
 
 === "Browser (no install)"
 
     1. Open Espressif's [esptool-js flasher](https://espressif.github.io/esptool-js/) in Chrome or Edge.
     2. Choose **Connect** and pick the Espressif serial device.
     3. Choose **Erase Flash** and wait for it to finish.
-    4. Add the file `sectrustkey-v1.0.0-cardputer-adv.bin` at address **`0x0`** and choose **Program**.
+    4. Add the file `sectrustkey-v1.1.0-cardputer-adv.bin` at address **`0x0`** and choose **Program**.
     5. Unplug and plug the Cardputer back in.
 
 === "Docker"
@@ -64,7 +67,7 @@ Keep both files somewhere safe. [Roll back](#roll-back) explains how to write it
     ```bash
     docker run --rm --device=/dev/ttyACM0 -v "$PWD":/fw espressif/idf:v5.5.3 \
       esptool.py --chip esp32s3 --port /dev/ttyACM0 --baud 921600 --after watchdog_reset \
-      write_flash --erase-all 0x0 /fw/sectrustkey-v1.0.0-cardputer-adv.bin
+      write_flash --erase-all 0x0 /fw/sectrustkey-v1.1.0-cardputer-adv.bin
     ```
 
 When it restarts you see the boot screen, then the home screen. The first boot creates the device identity: two random master keys stored in the [key store](../concepts/storage.md).
@@ -76,7 +79,7 @@ When it restarts you see the boot screen, then the home screen. The first boot c
 
 ## Update to a newer release
 
-Updates write only the firmware at `0x20000`. The key store is a separate partition at `0x320000` that an update never touches, so your passkeys, OpenPGP keys and settings stay.
+Updates write only the firmware at `0x20000`. The key storage is a separate partition at `0x320000` that an update never touches, so your passkeys, OpenPGP keys and settings stay. Devices installed from M5 Launcher update from Launcher instead: see [Update from M5 Launcher](launcher.md#update-from-m5-launcher).
 
 ```bash
 esptool.py --chip esp32s3 --baud 921600 --after watchdog_reset \

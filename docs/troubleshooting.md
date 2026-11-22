@@ -13,8 +13,14 @@ description: Fix common SecTrustKey problems — flashing and download mode, gpg
 ??? question "The screen stays dark after flashing"
     The chip is still in the loader. Add `--after watchdog_reset` to the esptool command, or switch the device off and on without holding G0.
 
-??? question "The device shows a storage error and USB stays off"
-    The key store or file store was found damaged, often because a first install was done without `--erase-all` over another firmware's data. Restore an [SD backup](guide/backup.md) from the recovery screen, or flash again with `--erase-all`.
+??? question "The first start asks *Set up storage?*"
+    The storage area holds another app's old data, which is normal after installing from M5 Launcher or flashing without `--erase-all`. Press ++enter++ to prepare it. SecTrustKey only offers this for an area that has never held SecTrustKey keys.
+
+??? question "The device shows *Storage recovery* and USB stays off"
+    The key store was found damaged. Restore an [SD backup](guide/backup.md) from the recovery screen. If you have none, decline the restore: the device then offers to erase and start over, after two confirmations, and all keys in it are lost.
+
+??? question "*Storage layout error* after using M5 Launcher"
+    The key storage partition `stk_store` is gone, usually because a SecTrustKey entry was deleted in Launcher, which removes the storage with it. Install SecTrustKey again from Launcher; if Launcher offers **Restore Data** from its own backup, accept it, otherwise restore your SecTrustKey [SD backup](guide/backup.md).
 
 ## GnuPG and smart cards
 

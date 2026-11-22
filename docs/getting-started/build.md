@@ -41,14 +41,14 @@ For an update, write only `0x20000 sectrustkey.bin` and leave out `--erase-all`.
 
 ## One image for `0x0`
 
-To produce the single image that releases ship:
+To produce the single image that releases ship, for esptool, M5Burner and M5 Launcher:
 
 ```bash
-scripts/in-container.sh bash -c 'cd build/cardputer-adv && esptool.py --chip esp32s3 merge_bin \
-  -o sectrustkey-cardputer-adv.bin --flash_mode dio --flash_freq 80m --flash_size 8MB \
-  0x0 bootloader/bootloader.bin 0x8000 partition_table/partition-table.bin \
-  0xF000 ota_data_initial.bin 0x20000 sectrustkey.bin'
+scripts/in-container.sh bash scripts/make-image.sh
+# -> build/cardputer-adv/sectrustkey-cardputer-adv.bin
 ```
+
+It merges the bootloader, partition table, boot data and firmware, and ends with the 4 KB installer pad of the key storage partition `stk_store`. Installers such as M5 Launcher create the partition from the table and copy only that pad, so the keys after it are never part of an image. See [M5 Launcher and M5Burner](launcher.md#how-the-storage-survives).
 
 ## Build options
 

@@ -12,7 +12,9 @@ description: How SecTrustKey stores data — two mirrored key-store pages with t
 
 ## Key store
 
-The first 8 KiB of the `fido_store` partition are two mirrored 4 KiB pages. Each holds a record with the device's two **master keys**:
+The key storage partition, `stk_store`, starts with a 4 KiB **installer pad**: the firmware image carries it, so installers such as M5 Launcher create the partition at full size and rewrite only that sector on every install and update. The firmware never reads or writes the pad. (Devices installed with v1.0 use a `fido_store` partition without the pad, which is still supported.)
+
+After the pad come two mirrored 4 KiB pages. Each holds a record with the device's two **master keys**:
 
 - one wraps the stored secrets;
 - the other is a secp256k1 scalar from which per-application keys are derived.

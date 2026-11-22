@@ -7,6 +7,17 @@ description: SecTrustKey release notes and the feature checklist of each version
 
 Downloads are on the [GitHub releases page](https://github.com/TakMashhido/SecTrustKey/releases).
 
+## v1.1.0: M5 Launcher and M5Burner
+
+- [x] Install and update SecTrustKey from [M5 Launcher](getting-started/launcher.md) next to other apps
+- [x] Keys survive Launcher updates, app switches and Launcher's flash compaction (tested with Launcher 3.0)
+- [x] One image for esptool, the browser flasher, M5Burner and Launcher (`scripts/make-image.sh`)
+- [x] New key storage partition `stk_store` with a 4 KiB installer pad; v1.0 devices keep `fido_store`
+- [x] **Set up storage?** on the first start when the storage area holds another app's old data, instead of a dead end
+- [x] Erasing a store that once held keys asks twice
+
+**Upgrading from v1.0**: flash `sectrustkey-v1.1.0-app.bin` at `0x20000` as before; your keys and layout stay.
+
 ## v1.0.0 — first public release
 
 **FIDO2 and passkeys**

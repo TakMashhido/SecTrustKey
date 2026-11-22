@@ -119,6 +119,7 @@ nav:
   - Getting started:
       - getting-started/index.md
       - Install from a release: getting-started/install.md
+      - M5 Launcher and M5Burner: getting-started/launcher.md
       - Build from source: getting-started/build.md
       - First steps: getting-started/first-steps.md
   - User guide:
