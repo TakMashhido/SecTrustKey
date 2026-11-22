@@ -7,6 +7,16 @@ description: SecTrustKey release notes and the feature checklist of each version
 
 Downloads are on the [GitHub releases page](https://github.com/TakMashhido/SecTrustKey/releases).
 
+## v1.1.1: startup passphrase fix
+
+- [x] Setting, changing or removing the startup passphrase works again. The device used to restart as soon as you approved the warning, so no passphrase was saved.
+- [x] Unlocking at power-up runs with enough memory for the key decryption.
+- [x] Tested on a Cardputer ADV under M5 Launcher 3.0: set a passphrase, restart, unlock, Health shows the passphrase as on.
+
+The cause: the background task that shows the progress bar had an 8 KB stack, while these key-store steps need up to about 20 KB. It now has 32 KB. Your keys were not at risk: the key store only ever replaces a record after writing and checking the new one, so an interruption leaves the old state in place.
+
+**Updating:** install `sectrustkey-v1.1.1-cardputer-adv.bin` from M5 Launcher or M5Burner, or write `sectrustkey-v1.1.1-app.bin` at `0x20000` with esptool. Your keys are kept.
+
 ## v1.1.0: M5 Launcher and M5Burner
 
 - [x] Install and update SecTrustKey from [M5 Launcher](getting-started/launcher.md) next to other apps
