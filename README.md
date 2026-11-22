@@ -1,60 +1,151 @@
-# SecTrustKey: FIDO2 passkey, OpenPGP and PIV security key for the M5Stack Cardputer ADV
+<div align="center">
 
-**SecTrustKey** is open-source firmware that turns an **M5Stack Cardputer ADV** (ESP32-S3)
-into a **hardware security key with its own screen and keyboard**. It works as a **FIDO2 /
-WebAuthn passkey** and U2F key, an **OpenPGP smart card** for GnuPG, SSH and Git signing, a
-**PIV** card, and an authenticator that shows **TOTP one-time codes** on the display. Every
-request is shown on the screen and approved with `Enter` or refused with `Del`.
+<img src=".github/assets/banner.png" alt="SecTrustKey: a FIDO2 passkey, OpenPGP and PIV security key with its own screen, for the M5Stack Cardputer ADV" width="100%">
 
-**Documentation:** [koustav.isroot.in/SecTrustKey](https://koustav.isroot.in/SecTrustKey/)
+# SecTrustKey
+
+**Open-source FIDO2 passkey, OpenPGP, PIV and TOTP security key firmware for the M5Stack Cardputer ADV (ESP32-S3)**
+
+[![Release](https://img.shields.io/github/v/release/TakMashhido/SecTrustKey?style=flat-square&color=0b8c78&label=release)](https://github.com/TakMashhido/SecTrustKey/releases/latest)
+[![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0-13203a?style=flat-square)](LICENSE)
+[![Hardware](https://img.shields.io/badge/hardware-Cardputer%20ADV-2a5fc4?style=flat-square)](https://docs.m5stack.com/)
+[![ESP-IDF](https://img.shields.io/badge/ESP--IDF-v5.5.3-c4456f?style=flat-square)](https://github.com/espressif/esp-idf)
+[![Docs](https://img.shields.io/badge/docs-koustav.isroot.in-6b4fd8?style=flat-square)](https://koustav.isroot.in/SecTrustKey/)
+
+[**Documentation**](https://koustav.isroot.in/SecTrustKey/) &nbsp;|&nbsp;
+[**Download**](https://github.com/TakMashhido/SecTrustKey/releases/latest) &nbsp;|&nbsp;
+[**Install**](https://koustav.isroot.in/SecTrustKey/getting-started/install/) &nbsp;|&nbsp;
+[**User guide**](https://koustav.isroot.in/SecTrustKey/guide/) &nbsp;|&nbsp;
+[**Architecture**](https://koustav.isroot.in/SecTrustKey/concepts/architecture/)
+
+</div>
+
+---
+
+**SecTrustKey** turns a pocket-sized M5Stack Cardputer ADV into a hardware security key that shows you what it is about to sign. Plug it in and it works as a **passkey and FIDO2/U2F key** in every major browser, an **OpenPGP card** for GnuPG, SSH and Git signing, a **PIV smart card**, and an **authenticator with live TOTP codes on its own display**. Every request appears on the screen with the website and account; nothing happens until you press <kbd>Enter</kbd>.
+
+## See it in action
+
+<table>
+  <tr>
+    <td width="50%"><img src=".github/assets/screens/prompt-signin.png" alt="Sign-in prompt naming github.com and the account, with Approve and Refuse"></td>
+    <td width="50%"><img src=".github/assets/screens/codes.png" alt="Live TOTP codes for GitHub, Google, Proton and a bank account"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Approve on the device.</b> The site and account are on the screen, not hidden in a browser dialog.</td>
+    <td align="center"><b>Codes on the screen.</b> TOTP codes with a countdown; touch-only accounts stay hidden.</td>
+  </tr>
+  <tr>
+    <td><img src=".github/assets/screens/health.png" alt="Health check scoring passphrase, FIDO PIN, OpenPGP PINs and PIV PINs"></td>
+    <td><img src=".github/assets/screens/backup-progress.png" alt="Saving an encrypted backup to the SD card, step 1 of 4"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Health check.</b> Flags factory PINs, a missing FIDO PIN, passphrase or backup.</td>
+    <td align="center"><b>Encrypted SD backup.</b> Verified twice; a failed backup never replaces a good one.</td>
+  </tr>
+  <tr>
+    <td><img src=".github/assets/screens/prompt-openpgp.png" alt="OpenPGP signature confirmation"></td>
+    <td><img src=".github/assets/screens/unlock.png" alt="Unlocking the key store with the startup passphrase"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>OpenPGP confirm.</b> Signing, decryption and SSH login can each require a key press.</td>
+    <td align="center"><b>Startup passphrase.</b> Keys stay encrypted at rest until you unlock them.</td>
+  </tr>
+</table>
+
+<details>
+<summary><b>More screens</b></summary>
+<br>
+
+| | | |
+|:-:|:-:|:-:|
+| <img src=".github/assets/screens/home-credit.png" alt="Home screen"> | <img src=".github/assets/screens/saved-keys.png" alt="Passkeys stored on the device"> | <img src=".github/assets/screens/prompt-create.png" alt="Create passkey prompt"> |
+| Home | Saved passkeys | Create a passkey |
+| <img src=".github/assets/screens/codes-touch.png" alt="Touch-protected code hidden"> | <img src=".github/assets/screens/health-detail.png" alt="Health advice for a default OpenPGP PIN"> | <img src=".github/assets/screens/passphrase-entry.png" alt="Typing a password with a strength meter"> |
+| Touch-only code hidden | Health advice | Password with strength meter |
+| <img src=".github/assets/screens/settings.png" alt="Settings menu"> | <img src=".github/assets/screens/about.png" alt="About page with QR code"> | <img src=".github/assets/screens/lockout.png" alt="Growing delay after wrong passphrases"> |
+| Settings | About | Wrong tries add delays, never wipe |
+
+</details>
+
+> Screens are rendered by the firmware's own drawing code on a computer; the real LCD looks the same, with its own colour and viewing angle.
 
 ## Features
 
-- **Passkeys and security-key login**: FIDO2 (CTAP 2.0 to 2.3) and U2F with EdDSA (Ed25519),
-  ES256, ES384 and ES512; resident credentials, credential management, `hmac-secret`,
-  `credProtect`, large blobs.
-- **OpenPGP card**: on-device key generation for RSA, Ed25519/X25519, NIST P-256/384/521,
-  secp256k1 and Brainpool; works with `gpg`, `ssh` and Git commit signing.
-- **PIV card**, **OATH** (TOTP/HOTP) and Yubico-compatible OTP.
-- **Codes on screen**: live TOTP codes with a countdown; touch-protected accounts stay hidden
-  until you press `Enter`.
-- **Startup passphrase**: encrypts the master keys at rest (PBKDF2-HMAC-SHA256, AES-256-GCM);
-  wrong tries only add delays and never erase anything.
-- **Encrypted microSD backup**, verify and restore, kept in a `SecTrustKey` folder.
-- **Security health check** that flags factory PINs, a missing FIDO PIN or passphrase, and no
-  backup.
-- **Configurable USB identity**: vendor ID, product ID and names at build time.
+| | Feature | Details |
+|:-:|---|---|
+| 🔑 | **Passkeys and FIDO2** | CTAP 2.0 to 2.3 and U2F. Ed25519, ES256, ES384, ES512. Resident keys, credential management, `hmac-secret`, `credProtect`, large blobs, FIDO PIN |
+| ✍️ | **OpenPGP card** | Keys generated on the device: Ed25519/X25519, RSA 2048 to 4096, NIST P-256/384/521, secp256k1, Brainpool. Works with `gpg`, `ssh` and Git signing |
+| 🪪 | **PIV card** | Standard slots, PIN, PUK and management key; works with `ykman` and OpenSC |
+| ⏱️ | **TOTP on screen** | OATH accounts shown live with a countdown; touch accounts reveal on <kbd>Enter</kbd>; HOTP and Yubico OTP too |
+| 🔒 | **Startup passphrase** | Master keys encrypted at rest with PBKDF2-SHA256 and AES-256-GCM; wrong tries only add delays, nothing is erased |
+| 💾 | **Encrypted SD backup** | Back up, verify and restore the whole key store; PBKDF2 at 600,000 rounds, AES-256-GCM, kept in a `SecTrustKey` folder |
+| 🩺 | **Health check** | Scores your setup without spending a PIN try and tells you how to fix each item |
+| 🧩 | **Your own USB identity** | Vendor ID, product ID, manufacturer and product name set at build time |
 
-## Build
+## Install in two minutes
 
-Everything runs in the pinned ESP-IDF container; only Docker is needed.
+1. Download `sectrustkey-v1.0.0-cardputer-adv.bin` from the [latest release](https://github.com/TakMashhido/SecTrustKey/releases/latest).
+2. Put the Cardputer in download mode: power off, hold **G0**, plug in USB, release **G0**.
+3. Flash it. This **erases the whole chip**, so [back up](https://koustav.isroot.in/SecTrustKey/getting-started/install/#back-up-the-cardputer) first if it holds anything you want to keep:
+
+```sh
+pip install esptool
+esptool.py --chip esp32s3 --baud 921600 write_flash --erase-all 0x0 sectrustkey-v1.0.0-cardputer-adv.bin
+```
+
+No Python? Use Espressif's [browser flasher](https://espressif.github.io/esptool-js/): connect, **Erase Flash**, then program the file at address `0x0`. Then [secure the device](https://koustav.isroot.in/SecTrustKey/getting-started/first-steps/): change the factory PINs, set a FIDO PIN, and consider a startup passphrase.
+
+<details>
+<summary><b>Build from source</b></summary>
+<br>
+
+Only Docker is needed; the build runs in the pinned ESP-IDF v5.5.3 container.
 
 ```sh
 git clone https://github.com/TakMashhido/SecTrustKey.git
 cd SecTrustKey
 scripts/in-container.sh bash scripts/build.sh
+# with your own USB identity:
+scripts/in-container.sh bash scripts/build.sh -DUSB_VID=0x1209 -DUSB_PID=0x0001 "-DUSB_PRODUCT=My Key"
 ```
 
-The firmware is written to `build/cardputer-adv/`. Flashing, the full-flash layout, custom
-USB IDs and every feature are explained in the
-[documentation](https://koustav.isroot.in/SecTrustKey/).
+The images are written to `build/cardputer-adv/`. See [Build from source](https://koustav.isroot.in/SecTrustKey/getting-started/build/).
+
+</details>
+
+## How it works
+
+<img src=".github/assets/diagrams/architecture.png" alt="Layers: host programs, four USB interfaces, the command thread and screen, the FIDO, OATH, OpenPGP and PIV applications, and the flash store with the key store" width="100%">
+
+One firmware presents four USB interfaces. Every request runs on a single command thread in the right application, and anything sensitive waits for you on the screen:
+
+<img src=".github/assets/diagrams/confirm-sequence.png" alt="Sequence: the browser asks for an assertion, the device shows the site, you press Enter, the signed assertion returns" width="100%">
+
+With a startup passphrase, the keys stay sealed until you unlock them on the device, before USB even starts:
+
+<img src=".github/assets/diagrams/boot-unlock.png" alt="Boot flow: read the key store, ask for the passphrase if sealed, unlock or wait after a wrong try, then start USB" width="100%">
+
+More in [Architecture](https://koustav.isroot.in/SecTrustKey/concepts/architecture/), [Storage and key store](https://koustav.isroot.in/SecTrustKey/concepts/storage/) and [Boot and unlock](https://koustav.isroot.in/SecTrustKey/concepts/boot/).
 
 ## Security
 
-The ESP32-S3 is a microcontroller, not a secure element, and Secure Boot and flash
-encryption are deliberately not enabled. Without a startup passphrase, anyone who can read the
-chip's flash can copy the keys. Read the
-[security model](https://koustav.isroot.in/SecTrustKey/security.html) before relying on it.
+> [!WARNING]
+> The ESP32-S3 is a microcontroller, not a certified secure element. Secure Boot and flash encryption are deliberately not enabled, so without a startup passphrase anyone who can read the chip's flash can copy the keys. Keep a second authenticator on every account that matters, and read the [security model](https://koustav.isroot.in/SecTrustKey/concepts/security/).
 
-## License
+Report security problems privately to **erkoustavkumar@gmail.com**.
 
-Copyright (c) 2026 Koustav Kumar Mondal. Licensed under the
-[GNU Affero General Public License v3.0](LICENSE). See [NOTICE.md](NOTICE.md) for the
-software this firmware incorporates and what was changed.
+## Documentation
 
-## Credits
+| Start here | Use it | Understand it |
+|---|---|---|
+| [Install from a release](https://koustav.isroot.in/SecTrustKey/getting-started/install/) | [Passkeys](https://koustav.isroot.in/SecTrustKey/guide/passkeys/) | [Architecture](https://koustav.isroot.in/SecTrustKey/concepts/architecture/) |
+| [Build from source](https://koustav.isroot.in/SecTrustKey/getting-started/build/) | [OpenPGP and GnuPG](https://koustav.isroot.in/SecTrustKey/guide/openpgp/) | [Security model](https://koustav.isroot.in/SecTrustKey/concepts/security/) |
+| [First steps](https://koustav.isroot.in/SecTrustKey/getting-started/first-steps/) | [TOTP codes](https://koustav.isroot.in/SecTrustKey/guide/codes/) | [Custom USB identity](https://koustav.isroot.in/SecTrustKey/customize/usb-identity/) |
+| [Troubleshooting](https://koustav.isroot.in/SecTrustKey/troubleshooting/) | [SD backup](https://koustav.isroot.in/SecTrustKey/guide/backup/) | [Flash layout](https://koustav.isroot.in/SecTrustKey/reference/flash-layout/) |
 
-SecTrustKey builds on [Pico FIDO](https://github.com/polhenarejos/pico-fido),
-[Pico OpenPGP](https://github.com/polhenarejos/pico-openpgp) and the
-[Pico Keys SDK](https://github.com/polhenarejos/pico-keys-sdk) by Pol Henarejos, and on the
-[Cardputer ADV port](https://github.com/lessucettes/cardputer-fido-adv) by lessucettes.
+## License and credits
+
+Copyright (c) 2026 [Koustav Kumar Mondal](https://koustav.isroot.in/). Licensed under the [GNU Affero General Public License v3.0](LICENSE); see [NOTICE.md](NOTICE.md) for incorporated software and changes.
+
+SecTrustKey builds on [Pico FIDO](https://github.com/polhenarejos/pico-fido), [Pico OpenPGP](https://github.com/polhenarejos/pico-openpgp) and the [Pico Keys SDK](https://github.com/polhenarejos/pico-keys-sdk) by Pol Henarejos, and on the [Cardputer ADV port](https://github.com/lessucettes/cardputer-fido-adv) by lessucettes.

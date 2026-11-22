@@ -1,6 +1,6 @@
 # SecTrustKey partition table for the M5Stack Cardputer ADV (8 MB flash).
 # A full-flash install writes it and replaces everything on the chip, so back up the
-# flash first: https://koustav.isroot.in/SecTrustKey/install.html
+# flash first: https://koustav.isroot.in/SecTrustKey/getting-started/install/
 # Name,   Type, SubType, Offset,    Size,     Flags
 nvs,      data, nvs,     0x009000,  0x006000,
 otadata,  data, ota,     0x00F000,  0x002000,
