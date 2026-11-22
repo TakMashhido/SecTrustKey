@@ -1,8 +1,12 @@
 # SecTrustKey partition table for the M5Stack Cardputer ADV (8 MB flash).
-# A full-flash install writes it and replaces everything on the chip, so back up the
-# flash first: https://koustav.isroot.in/SecTrustKey/getting-started/install/
-# Name,   Type, SubType, Offset,    Size,     Flags
-nvs,      data, nvs,     0x009000,  0x006000,
-otadata,  data, ota,     0x00F000,  0x002000,
-app0,     app,  ota_0,   0x020000,  0x300000,
-fido_store, 0x40, 0x01,  0x320000,  0x102000,
+# stk_store holds the keys: a 4 KiB installer pad, then the two key pages and the 1 MiB
+# filesystem. Installers that read this table, such as M5 Launcher, create stk_store from it
+# and rewrite only the pad on every install and update. Devices flashed with v1.0 keep their
+# fido_store partition and remain supported.
+# A full-flash install replaces everything on the chip, so back up the flash first:
+# https://koustav.isroot.in/SecTrustKey/getting-started/install/
+# Name,    Type, SubType, Offset,    Size,     Flags
+nvs,       data, nvs,     0x009000,  0x006000,
+otadata,   data, ota,     0x00F000,  0x002000,
+app0,      app,  ota_0,   0x020000,  0x300000,
+stk_store, data, spiffs,  0x320000,  0x103000,

@@ -14,6 +14,25 @@
 #define CF_FLASH_RESERVED_SIZE 0x9000u
 #define CF_MAX_PARTITIONS 32u
 
+/*
+ * The installer-friendly layout. Firmware launchers such as M5 Launcher only create
+ * data partitions they know (FAT, SPIFFS, LittleFS) and copy whatever bytes an image
+ * carries for them on every install and update. So the store is also accepted as a
+ * SPIFFS-typed data partition whose first sector is an "installer pad": the image ships
+ * 4 KiB there, an installer rewrites only that sector, and the key pages and filesystem
+ * start right after it. The contents are not a SPIFFS volume.
+ */
+#define CF_STK_PART_TYPE 0x01u
+#define CF_STK_PART_SUBTYPE 0x82u
+#define CF_STK_PART_LABEL "stk_store"
+#define CF_STK_PAD_SIZE 0x1000u
+#define CF_STK_PART_SIZE (CF_STK_PAD_SIZE + CF_FIDO_STORE_SIZE)
+
+typedef enum {
+    CF_STORE_FIXED = 0,    /* fido_store, type 0x40: full-flash installs up to v1.0 */
+    CF_STORE_INSTALLER = 1 /* stk_store, data/SPIFFS with an installer pad */
+} cf_store_kind;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -41,12 +60,15 @@ typedef struct {
 
 typedef struct {
     uint32_t flash_size;
-    uint32_t store_offset;
+    uint32_t store_offset;     /* absolute address of the key pages */
+    uint32_t partition_offset; /* absolute address of the partition that holds them */
+    cf_store_kind kind;
 } cf_flash_layout;
 
 /*
  * Validates an injected partition descriptor set. No partition table is
- * written and no fixed physical address is assumed.
+ * written and no fixed physical address is assumed. A fido_store partition is
+ * preferred when present; otherwise an stk_store partition is used.
  */
 cf_layout_status cf_flash_layout_validate(const cf_partition_desc *partitions,
                                            size_t count, uint32_t flash_size,

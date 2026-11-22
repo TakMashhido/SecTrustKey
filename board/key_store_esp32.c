@@ -112,21 +112,41 @@ static int validate_partition_table(void) {
     return 0;
 }
 
+/* The store as every caller sees it: the key pages at offset 0 and the filesystem at
+ * CF_FIDO_FS_OFFSET. For a fido_store partition this is the partition itself; for an
+ * stk_store partition it starts one sector in, after the installer pad. Only address and
+ * size differ from the real partition, and esp_partition_read/write/erase_range/mmap use
+ * just those fields, so the installer pad can never be read or written through it. */
+static esp_partition_t store_view;
+
+/* After validate_partition_table(): the view of the partition it selected, or NULL. */
+static const esp_partition_t *open_store_view(void) {
+    const int fixed = fido_layout.kind == CF_STORE_FIXED;
+    const esp_partition_t *partition = esp_partition_find_first(
+        (esp_partition_type_t)(fixed ? CF_FIDO_PART_TYPE : CF_STK_PART_TYPE),
+        (esp_partition_subtype_t)(fixed ? CF_FIDO_PART_SUBTYPE : CF_STK_PART_SUBTYPE),
+        fixed ? CF_FIDO_PART_LABEL : CF_STK_PART_LABEL);
+    if (partition == NULL || partition->address != fido_layout.partition_offset) {
+        return NULL;
+    }
+    store_view = *partition;
+    store_view.address = fido_layout.store_offset;
+    store_view.size = CF_FIDO_STORE_SIZE;
+    return &store_view;
+}
+
 int cardputer_key_store_prepare(void) {
-    fido_partition = esp_partition_find_first(CF_FIDO_PART_TYPE,
-                                              CF_FIDO_PART_SUBTYPE,
-                                              CF_FIDO_PART_LABEL);
+    fido_partition = NULL;
+    const int validation = validate_partition_table();
+    if (validation != 0) {
+        store_status = validation;
+        return store_status;
+    }
+    fido_partition = open_store_view();
     if (fido_partition == NULL) {
         store_status = -(int)CF_LAYOUT_MISSING;
         return store_status;
     }
-    const int validation = validate_partition_table();
-    if (validation != 0) {
-        store_status = validation;
-        fido_partition = NULL;
-        return store_status;
-    }
-
     return 0;
 }
 
@@ -200,6 +220,27 @@ void otp_platform_init(const uint8_t **otp_key_1_out,
     if (otp_key_2_out != NULL) {
         *otp_key_2_out = device_keys.key2;
     }
+}
+
+int cardputer_key_store_kind(void) {
+    return fido_partition == NULL ? -1 : (int)fido_layout.kind;
+}
+
+/* 1 when neither key page has ever held a SecTrustKey record (no CFKEY magic at all), as in
+ * a partition an installer has just created over another app's old data. Used only to word
+ * the recovery screen; erasing always needs the user's explicit confirmation. */
+int cardputer_key_store_foreign(void) {
+    static const uint8_t prefix[7] = {'C', 'F', 'K', 'E', 'Y', '0', '0'};
+    uint8_t head[sizeof(prefix)];
+    for (uint32_t page = 0; page < 2; ++page) {
+        if (store_read(NULL, page * 0x1000u, head, sizeof(head)) != 0) {
+            return 0;
+        }
+        if (memcmp(head, prefix, sizeof(prefix)) == 0) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 int otp_platform_enable_secure_boot(uint8_t bootkey, bool secure_lock) {

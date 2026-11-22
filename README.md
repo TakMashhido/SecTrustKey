@@ -81,20 +81,28 @@
 | 🔒 | **Startup passphrase** | Master keys encrypted at rest with PBKDF2-SHA256 and AES-256-GCM; wrong tries only add delays, nothing is erased |
 | 💾 | **Encrypted SD backup** | Back up, verify and restore the whole key store; PBKDF2 at 600,000 rounds, AES-256-GCM, kept in a `SecTrustKey` folder |
 | 🩺 | **Health check** | Scores your setup without spending a PIN try and tells you how to fix each item |
+| 🚀 | **M5 Launcher ready** | Install and update from Launcher next to other apps; one image also flashes with esptool or M5Burner |
 | 🧩 | **Your own USB identity** | Vendor ID, product ID, manufacturer and product name set at build time |
 
 ## Install in two minutes
 
-1. Download `sectrustkey-v1.0.0-cardputer-adv.bin` from the [latest release](https://github.com/TakMashhido/SecTrustKey/releases/latest).
-2. Put the Cardputer in download mode: power off, hold **G0**, plug in USB, release **G0**.
-3. Flash it. This **erases the whole chip**, so [back up](https://koustav.isroot.in/SecTrustKey/getting-started/install/#back-up-the-cardputer) first if it holds anything you want to keep:
+Download `sectrustkey-v1.1.0-cardputer-adv.bin` from the [latest release](https://github.com/TakMashhido/SecTrustKey/releases/latest). The same file works three ways:
+
+| | How |
+|---|---|
+| **M5 Launcher** | Copy the file to the SD card, then in Launcher open **SD**, select it and **Install**. SecTrustKey sits next to your other apps. [Guide](https://koustav.isroot.in/SecTrustKey/getting-started/launcher/) |
+| **esptool** | Download mode (power off, hold **G0**, plug in USB, release **G0**), then the command below. Replaces everything on the chip. |
+| **Browser** | Espressif's [browser flasher](https://espressif.github.io/esptool-js/): connect, **Erase Flash**, then program the file at `0x0`. |
 
 ```sh
 pip install esptool
-esptool.py --chip esp32s3 --baud 921600 write_flash --erase-all 0x0 sectrustkey-v1.0.0-cardputer-adv.bin
+esptool.py --chip esp32s3 --baud 921600 write_flash --erase-all 0x0 sectrustkey-v1.1.0-cardputer-adv.bin
 ```
 
-No Python? Use Espressif's [browser flasher](https://espressif.github.io/esptool-js/): connect, **Erase Flash**, then program the file at address `0x0`. Then [secure the device](https://koustav.isroot.in/SecTrustKey/getting-started/first-steps/): change the factory PINs, set a FIDO PIN, and consider a startup passphrase.
+On the first start the device may ask **Set up storage?**; press <kbd>Enter</kbd>. Then [secure the device](https://koustav.isroot.in/SecTrustKey/getting-started/first-steps/): change the factory PINs, set a FIDO PIN, and consider a startup passphrase.
+
+> [!CAUTION]
+> In M5 Launcher, **never delete a SecTrustKey entry** unless you mean to erase your keys: Launcher removes the key storage together with the app. To update, just install the new file; it shares the same keys.
 
 <details>
 <summary><b>Build from source</b></summary>
@@ -108,6 +116,8 @@ cd SecTrustKey
 scripts/in-container.sh bash scripts/build.sh
 # with your own USB identity:
 scripts/in-container.sh bash scripts/build.sh -DUSB_VID=0x1209 -DUSB_PID=0x0001 "-DUSB_PRODUCT=My Key"
+# the single image for esptool, M5Burner and M5 Launcher:
+scripts/in-container.sh bash scripts/make-image.sh
 ```
 
 The images are written to `build/cardputer-adv/`. See [Build from source](https://koustav.isroot.in/SecTrustKey/getting-started/build/).

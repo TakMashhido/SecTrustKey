@@ -801,11 +801,58 @@ void backup_startup(Board& board) {
     esp_restart();
 }
 
+struct EraseJob {
+    bool ok = false;
+};
+
+void erase_store_job(void* arg) {
+    auto* job = static_cast<EraseJob*>(arg);
+    const esp_partition_t* store = cardputer_fido_partition();
+    job->ok = store != nullptr && esp_partition_erase_range(store, 0, CF_FIDO_STORE_SIZE) == ESP_OK;
+}
+
+// Erases the key pages and filesystem so the next start creates a new device identity,
+// exactly as on a freshly flashed device. Offered only for a valid partition that holds no
+// usable store, and never without the user's confirmation: once for an area that has never
+// held SecTrustKey data, twice for one that has.
+bool set_up_new_store(Board& board, bool never_used) {
+    if (never_used) {
+        if (!confirm(board, "Set up storage?", "No SecTrustKey keys here yet", Mood::Info, "Storage")) {
+            return false;
+        }
+    } else {
+        if (!confirm(board, "Erase and start over?", "Keys stored here are lost", Mood::Bad, "Storage") ||
+            !confirm(board, "Really erase?", "This cannot be undone", Mood::Bad, "Storage")) {
+            return false;
+        }
+    }
+    EraseJob job;
+    run_with_progress(board, "Preparing storage", "Erasing the key area", Accent::Amber, 6000,
+                      erase_store_job, &job);
+    if (!job.ok) {
+        notice(board, "Erase failed", "USB stays off", Mood::Bad, "Storage");
+        return false;
+    }
+    notice(board, "Storage ready", "Press Enter to restart", Mood::Good, "Storage");
+    esp_restart();
+    return true;  // not reached on the device; host stubs of esp_restart() do return
+}
+
 [[noreturn]] void backup_recovery(Board& board) {
+    // Status -3 means the partition is valid but its contents are not a usable store. Right
+    // after an installer such as M5 Launcher creates the partition, it still holds another
+    // app's old data and no SecTrustKey record at all.
+    const bool can_set_up = cardputer_key_store_status() == -3 && cardputer_fido_partition() != nullptr;
+    const bool never_used = can_set_up && cardputer_key_store_foreign() == 1;
     for (;;) {
+        if (never_used) { set_up_new_store(board, true); }
         if (confirm(board, "Storage recovery", "Restore backup from SD?")) {
             run_mode(board, BackupMode::Restore);
             if (sd_teardown_failed) { esp_restart(); }
+        } else if (can_set_up && !never_used) {
+            if (!set_up_new_store(board, false)) {
+                notice(board, "USB disabled", "Restore required", Mood::Bad);
+            }
         } else {
             notice(board, "USB disabled", "Restore required", Mood::Bad);
         }

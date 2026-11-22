@@ -33,7 +33,8 @@ cf_layout_status cf_flash_layout_validate(const cf_partition_desc *partitions,
         return CF_LAYOUT_TOO_MANY;
     }
 
-    size_t store_index = count;
+    size_t fixed_index = count;
+    size_t installer_index = count;
     for (size_t i = 0; i < count; ++i) {
         if (!label_terminated(partitions[i].label)) {
             return CF_LAYOUT_INVALID_ARGUMENT;
@@ -51,23 +52,43 @@ cf_layout_status cf_flash_layout_validate(const cf_partition_desc *partitions,
             }
         }
         if (strcmp(partitions[i].label, CF_FIDO_PART_LABEL) == 0) {
-            if (store_index != count) {
-                return CF_LAYOUT_DUPLICATE_LABEL;
-            }
-            store_index = i;
+            fixed_index = i;
+        } else if (strcmp(partitions[i].label, CF_STK_PART_LABEL) == 0) {
+            installer_index = i;
         }
     }
-    if (store_index == count) {
+
+    /* A fido_store partition already holds keys wherever it exists, so it wins. */
+    size_t store_index;
+    cf_store_kind kind;
+    if (fixed_index != count) {
+        store_index = fixed_index;
+        kind = CF_STORE_FIXED;
+    } else if (installer_index != count) {
+        store_index = installer_index;
+        kind = CF_STORE_INSTALLER;
+    } else {
         return CF_LAYOUT_MISSING;
     }
 
     const cf_partition_desc *store = &partitions[store_index];
-    if (store->type != CF_FIDO_PART_TYPE ||
-        store->subtype != CF_FIDO_PART_SUBTYPE) {
-        return CF_LAYOUT_WRONG_TYPE;
-    }
-    if (store->size != CF_FIDO_STORE_SIZE) {
-        return CF_LAYOUT_WRONG_SIZE;
+    if (kind == CF_STORE_FIXED) {
+        if (store->type != CF_FIDO_PART_TYPE ||
+            store->subtype != CF_FIDO_PART_SUBTYPE) {
+            return CF_LAYOUT_WRONG_TYPE;
+        }
+        if (store->size != CF_FIDO_STORE_SIZE) {
+            return CF_LAYOUT_WRONG_SIZE;
+        }
+    } else {
+        if (store->type != CF_STK_PART_TYPE ||
+            store->subtype != CF_STK_PART_SUBTYPE) {
+            return CF_LAYOUT_WRONG_TYPE;
+        }
+        /* A launcher may round a partition up; only the first CF_STK_PART_SIZE is used. */
+        if (store->size < CF_STK_PART_SIZE) {
+            return CF_LAYOUT_WRONG_SIZE;
+        }
     }
     /* Bootloader and partition table are not reported by esp_partition_find,
      * so reserve the first 0x9000 bytes explicitly. */
@@ -89,7 +110,10 @@ cf_layout_status cf_flash_layout_validate(const cf_partition_desc *partitions,
     }
 
     out->flash_size = flash_size;
-    out->store_offset = store->offset;
+    out->partition_offset = store->offset;
+    out->store_offset =
+        store->offset + (kind == CF_STORE_INSTALLER ? CF_STK_PAD_SIZE : 0u);
+    out->kind = kind;
     return CF_LAYOUT_OK;
 }
 
