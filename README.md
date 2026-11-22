@@ -86,7 +86,7 @@
 
 ## Install in two minutes
 
-Download `sectrustkey-v1.1.0-cardputer-adv.bin` from the [latest release](https://github.com/TakMashhido/SecTrustKey/releases/latest). The same file works three ways:
+Download `sectrustkey-v1.1.1-cardputer-adv.bin` from the [latest release](https://github.com/TakMashhido/SecTrustKey/releases/latest). The same file works three ways:
 
 | | How |
 |---|---|
@@ -96,7 +96,7 @@ Download `sectrustkey-v1.1.0-cardputer-adv.bin` from the [latest release](https:
 
 ```sh
 pip install esptool
-esptool.py --chip esp32s3 --baud 921600 write_flash --erase-all 0x0 sectrustkey-v1.1.0-cardputer-adv.bin
+esptool.py --chip esp32s3 --baud 921600 write_flash --erase-all 0x0 sectrustkey-v1.1.1-cardputer-adv.bin
 ```
 
 On the first start the device may ask **Set up storage?**; press <kbd>Enter</kbd>. Then [secure the device](https://koustav.isroot.in/SecTrustKey/getting-started/first-steps/): change the factory PINs, set a FIDO PIN, and consider a startup passphrase.

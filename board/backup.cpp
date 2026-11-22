@@ -321,10 +321,16 @@ void worker_entry(void* raw) {
     vTaskDelete(nullptr);
 }
 
+// The jobs run key-store operations that keep whole 4 KiB key pages on the stack:
+// changing the passphrase holds three of them plus the page writer's own copies, and
+// unlocking holds two plus AES-GCM and PBKDF2 state. 8 KiB overflowed and reset the
+// chip; 32 KiB covers the deepest path with room to spare.
+constexpr std::uint32_t kWorkerStackBytes = 32 * 1024;
+
 void run_with_progress(Board& board, const char* title, const char* detail, Accent accent,
                        std::uint32_t expected_ms, void (*fn)(void*), void* arg) {
     WorkerJob job{fn, arg, xSemaphoreCreateBinary()};
-    if (!job.done || xTaskCreate(worker_entry, "stk_work", 8192, &job, 1, nullptr) != pdPASS) {
+    if (!job.done || xTaskCreate(worker_entry, "stk_work", kWorkerStackBytes, &job, 1, nullptr) != pdPASS) {
         if (job.done) { vSemaphoreDelete(job.done); }
         board.render(make_progress(title, detail, 1, 1, -1, accent, 0, "Keep the device powered", "Security"));
         fn(arg);   // fall back to running here, without animation
