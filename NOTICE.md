@@ -54,6 +54,11 @@ The software above was modified by Koustav Kumar Mondal in 2026. In summary:
 - **Cardputer ADV features.** On-device user interface, on-screen TOTP codes, optional
   startup passphrase that encrypts the master keys at rest, security health dashboard, SD
   card backup tools, and fixes for concurrency and storage defects found on hardware.
+- **Clock and Linux login (v1.2.0).** The clock can be set on the device over Wi-Fi or by
+  hand; the SDK's `aes_encrypt`/`aes_decrypt` are linked as `stk_aes_encrypt`/`stk_aes_decrypt`
+  so they cannot meet the Wi-Fi supplicant's functions of the same name; core1's command
+  stack is reserved during boot and core0's stack is smaller. Registrations for `pam://`
+  relying parties return the device attestation certificate instead of self attestation.
 
 Each modified file is a derivative work; the notices it carried before are unchanged.
 

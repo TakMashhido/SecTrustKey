@@ -2,6 +2,7 @@ idf_component_register(
     SRCS
         board.cpp
         backup.cpp
+        clock.cpp
         backup_codec.c
         backup_store.c
         input.cpp
@@ -38,4 +39,8 @@ idf_component_register(
         sdmmc
         mbedtls
         espcoredump
+        esp_wifi
+        esp_netif
+        esp_event
+        lwip
 )

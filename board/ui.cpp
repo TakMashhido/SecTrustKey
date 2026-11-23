@@ -5,10 +5,12 @@
 #include "M5Unified.h"
 #include "board.h"
 #include "backup.h"
+#include "clock.h"
 #include "credential_service.h"
 #ifdef ESP_PLATFORM
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
+#include "freertos/task.h"
 #endif
 extern "C" {
 #include "file.h"
@@ -199,15 +201,19 @@ void handle_action(const Action& action) {
         case ActionType::PassphraseSetup:
         case ActionType::VerifyBackup:
         case ActionType::SdInfo:
+        case ActionType::ClockSetup:
             if (is_busy()) {
                 model.set_status("Request in progress", Board::now_ms());
                 break;
             }
             requested_backup = action.type == ActionType::PassphraseSetup ? BackupMode::Passphrase
                                : action.type == ActionType::VerifyBackup  ? BackupMode::Verify
+                               : action.type == ActionType::ClockSetup    ? BackupMode::Clock
                                                                           : BackupMode::SdInfo;
             backup_started = true;
-            model.set_status("Restarting to set lock...", Board::now_ms());
+            model.set_status(action.type == ActionType::ClockSetup ? "Restarting for clock..."
+                                                                   : "Restarting...",
+                             Board::now_ms());
             if (xTaskCreate(backup_reboot_task, "fido_backup_boot", 4096, nullptr, 1, nullptr) != pdPASS) {
                 backup_started = false;
                 model.set_status("Restart failed", Board::now_ms());
@@ -442,13 +448,14 @@ void pump_health(std::uint64_t now) {
                 backup ? HealthLevel::Good : HealthLevel::Warn,
                 backup ? "A backup was saved and checked" : "Settings > Security & Backup > Backup to SD");
     health_item(items, n, "Clock", has_set_rtc() ? "Set" : "Unknown", HealthLevel::Info,
-                has_set_rtc() ? "One-time codes can be shown" : "Run stk-time.py on your computer");
+                has_set_rtc() ? "One-time codes can be shown" : "Settings > Clock: Wi-Fi or type it");
     char value[16];
     char advice[64];
     std::snprintf(value, sizeof(value), "%u KB",
                   static_cast<unsigned>(heap_caps_get_free_size(MALLOC_CAP_8BIT) / 1024));
-    std::snprintf(advice, sizeof(advice), "Largest free block %u KB",
-                  static_cast<unsigned>(heap_caps_get_largest_free_block(MALLOC_CAP_8BIT) / 1024));
+    std::snprintf(advice, sizeof(advice), "Largest block %u KB, UI stack %u KB left",
+                  static_cast<unsigned>(heap_caps_get_largest_free_block(MALLOC_CAP_8BIT) / 1024),
+                  static_cast<unsigned>(uxTaskGetStackHighWaterMark(nullptr) / 1024));
     health_item(items, n, "Memory", value, HealthLevel::Info, advice);
     const std::uint64_t minutes = now / 60000;
     std::snprintf(value, sizeof(value), "%uh %02um", static_cast<unsigned>(minutes / 60),
@@ -597,6 +604,16 @@ extern "C" void cardputer_ui_pump(void) {
         }
         usb_mounted = mounted;
         model.set_usb_mounted(mounted);
+    }
+
+    {
+        // Status-bar clock in the user's time zone, once the time is known.
+        StatusBar bar = model.status_bar();
+        int hour = 0, minute = 0;
+        bar.time_known = clock_local_time(&hour, &minute);
+        bar.hour = static_cast<std::uint8_t>(hour);
+        bar.minute = static_cast<std::uint8_t>(minute);
+        model.set_status_bar(bar);
     }
 
     Action action;

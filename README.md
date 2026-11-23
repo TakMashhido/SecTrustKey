@@ -78,6 +78,8 @@
 | ✍️ | **OpenPGP card** | Keys generated on the device: Ed25519/X25519, RSA 2048 to 4096, NIST P-256/384/521, secp256k1, Brainpool. Works with `gpg`, `ssh` and Git signing |
 | 🪪 | **PIV card** | Standard slots, PIN, PUK and management key; works with `ykman` and OpenSC |
 | ⏱️ | **TOTP on screen** | OATH accounts shown live with a countdown; touch accounts reveal on <kbd>Enter</kbd>; HOTP and Yubico OTP too |
+| 🕒 | **Sets its own clock** | Settings → Clock: sync over Wi-Fi or type the time, with your time zone. No computer script needed; Wi-Fi stays off while the key is in use |
+| 🐧 | **Linux login** | `pam_u2f` and `pamu2fcfg` work out of the box, including the older versions in Ubuntu 24.04 and Debian 12 |
 | 🔒 | **Startup passphrase** | Master keys encrypted at rest with PBKDF2-SHA256 and AES-256-GCM; wrong tries only add delays, nothing is erased |
 | 💾 | **Encrypted SD backup** | Back up, verify and restore the whole key store; PBKDF2 at 600,000 rounds, AES-256-GCM, kept in a `SecTrustKey` folder |
 | 🩺 | **Health check** | Scores your setup without spending a PIN try and tells you how to fix each item |
@@ -86,7 +88,7 @@
 
 ## Install in two minutes
 
-Download `sectrustkey-v1.1.1-cardputer-adv.bin` from the [latest release](https://github.com/TakMashhido/SecTrustKey/releases/latest). The same file works three ways:
+Download `sectrustkey-v1.2.0-cardputer-adv.bin` from the [latest release](https://github.com/TakMashhido/SecTrustKey/releases/latest). The same file works three ways:
 
 | | How |
 |---|---|
@@ -96,7 +98,7 @@ Download `sectrustkey-v1.1.1-cardputer-adv.bin` from the [latest release](https:
 
 ```sh
 pip install esptool
-esptool.py --chip esp32s3 --baud 921600 write_flash --erase-all 0x0 sectrustkey-v1.1.1-cardputer-adv.bin
+esptool.py --chip esp32s3 --baud 921600 write_flash --erase-all 0x0 sectrustkey-v1.2.0-cardputer-adv.bin
 ```
 
 On the first start the device may ask **Set up storage?**; press <kbd>Enter</kbd>. Then [secure the device](https://koustavmondal.com/SecTrustKey/getting-started/first-steps/): change the factory PINs, set a FIDO PIN, and consider a startup passphrase.

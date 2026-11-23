@@ -81,7 +81,21 @@ bool set_rtc = true;
 bool set_rtc = false;
 #endif
 
+/* The ESP32-S3 RTC timer keeps counting across software restarts and deep sleep; only a
+ * power-on reset starts it again at 1970. A time after 2025-01-01 was therefore set during
+ * this power-up, possibly before a restart into maintenance mode cleared `set_rtc`. */
+#define STK_TIME_VALID_AFTER 1735689600
+
 bool has_set_rtc(void) {
+    if (set_rtc) {
+        return true;
+    }
+#ifndef ENABLE_EMULATION
+    struct timeval tv;
+    if (gettimeofday(&tv, NULL) == 0 && tv.tv_sec >= STK_TIME_VALID_AFTER) {
+        set_rtc = true;
+    }
+#endif
     return set_rtc;
 }
 

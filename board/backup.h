@@ -3,7 +3,7 @@
 #include "key_store.h"
 
 namespace cardputer {
-enum class BackupMode : unsigned char { None = 0, Save = 1, Restore = 2, Passphrase = 3, Verify = 4, SdInfo = 5 };
+enum class BackupMode : unsigned char { None = 0, Save = 1, Restore = 2, Passphrase = 3, Verify = 4, SdInfo = 5, Clock = 6 };
 /* Requests are persisted by a worker after flushing SDK storage, then reboot.
  * Passwords are entered only in the pre-USB maintenance boot, never persisted. */
 bool request_backup_mode(BackupMode mode);

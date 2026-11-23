@@ -13,7 +13,7 @@ enum class RequestKind {
     OpenPgpSign, OpenPgpDecrypt, OpenPgpAuth
 };
 enum class Screen { MainMenu, SavedKeys, KeyDetails, Settings, SettingsEdit, ConfirmDeleteKey, Backup, Codes, Health, HealthDetail, About };
-enum class ActionType { None, OpenSavedKeys, OpenSettings, PowerOff, DeleteKey, SaveSettings, BackupToSD, RestoreFromSD, OpenCodes, PassphraseSetup, OpenHealth, VerifyBackup, SdInfo };
+enum class ActionType { None, OpenSavedKeys, OpenSettings, PowerOff, DeleteKey, SaveSettings, BackupToSD, RestoreFromSD, OpenCodes, PassphraseSetup, OpenHealth, VerifyBackup, SdInfo, ClockSetup };
 // What the Codes screen can show. Codes appear only in Ready; every other state explains why.
 enum class CodesState { Loading, TimeUnknown, Protected, Empty, Ready, Error };
 enum class Layout { List, Home, Details, Prompt, Editor, Entry, Progress, About, Splash };

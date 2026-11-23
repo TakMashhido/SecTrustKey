@@ -90,6 +90,25 @@ inline Snapshot make_splash(int percent) {
     return view;
 }
 
+// Visible entry of plain text such as a network name or a date. No strength meter.
+inline Snapshot make_text_entry(const char* title, const char* text, std::size_t maximum,
+                                const char* hint, const char* footer, Icon icon, Accent accent) {
+    Snapshot view;
+    view.layout = Layout::Entry;
+    view.title = title;
+    view.icon = icon;
+    view.accent = accent;
+    view.footer = footer;
+    view.subtitle = hint;
+    view.meter = -1;
+    std::snprintf(view.rows[0].text, sizeof(view.rows[0].text), "%s", text ? text : "");
+    view.rows[0].mono = true;
+    std::snprintf(view.rows[0].value, sizeof(view.rows[0].value), "%u / %u",
+                  static_cast<unsigned>(std::strlen(view.rows[0].text)), static_cast<unsigned>(maximum));
+    view.row_count = 1;
+    return view;
+}
+
 inline Snapshot make_entry(const char* title, const char* typed, std::size_t length,
                            std::size_t minimum, std::size_t maximum, const char* hint,
                            const char* footer) {

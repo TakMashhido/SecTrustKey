@@ -1,5 +1,7 @@
 #include "backup.h"
 #include "dialog.h"
+#include "maintenance_ui.h"
+#include "clock.h"
 #include "backup_codec.h"
 #include "backup_password.h"
 #include "backup_store.h"
@@ -132,38 +134,10 @@ struct SDSession {
     }
 };
 
-void pause() {
-    vTaskDelay(pdMS_TO_TICKS(10));
-}
-
-Keys fresh_keys(Board& board) {
-    // Require a full release between screens, including modifier keys.
-    do {
-        board.poll_input();
-        pause();
-    } while (board.keys().any);
-    for (;;) {
-        board.poll_input();
-        if (board.keys().any) { return board.keys(); }
-        pause();
-    }
-}
-
-void notice(Board& board, const char* title, const char* line, Mood mood = Mood::Info,
-            const char* header = "SD card") {
-    board.render(make_dialog(header, title, line, "ENT:OK", mood));
-    while (!fresh_keys(board).enter) {}
-}
-
-bool confirm(Board& board, const char* title, const char* line, Mood mood = Mood::Warn,
-             const char* header = "SD card") {
-    board.render(make_dialog(header, title, line, "ENT:YES DEL:NO", mood));
-    for (;;) {
-        const Keys keys = fresh_keys(board);
-        if (keys.del) { return false; }
-        if (keys.enter) { return true; }
-    }
-}
+using maint::pause;
+using maint::fresh_keys;
+using maint::notice;
+using maint::confirm;
 
 bool enter_password(Board& board, BackupPassword& password, const char* title,
                     std::size_t minimum, bool cancellable = true) {
@@ -781,7 +755,7 @@ bool backup_verified_once() {
 bool request_backup_mode(BackupMode mode) {
     return (mode == BackupMode::Save || mode == BackupMode::Restore ||
             mode == BackupMode::Passphrase || mode == BackupMode::Verify ||
-            mode == BackupMode::SdInfo) &&
+            mode == BackupMode::SdInfo || mode == BackupMode::Clock) &&
            state_write("mode", static_cast<std::uint8_t>(mode));
 }
 
@@ -791,7 +765,10 @@ void backup_startup(Board& board) {
         backup_recovery(board);
     }
     if (pending != 0) { backup_recovery(board); }
-    if (mode == 0) { return; }
+    if (mode == 0) {
+        clock_sync_at_start(board);   // returns at once unless a sync is due; restarts after one
+        return;
+    }
     if (!state_write("mode", 0)) { backup_recovery(board); }
     if (mode == static_cast<unsigned>(BackupMode::Save) || mode == static_cast<unsigned>(BackupMode::Restore)) {
         run_mode(board, static_cast<BackupMode>(mode));
@@ -801,6 +778,8 @@ void backup_startup(Board& board) {
         run_verify(board);
     } else if (mode == static_cast<unsigned>(BackupMode::SdInfo)) {
         run_sd_info(board);
+    } else if (mode == static_cast<unsigned>(BackupMode::Clock)) {
+        clock_menu(board);
     }
     if (sd_teardown_failed) { esp_restart(); }
     if (!state_read("pending", pending) || pending != 0) { backup_recovery(board); }

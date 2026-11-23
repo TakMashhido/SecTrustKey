@@ -61,6 +61,10 @@ extern void double_hash_pin(const_byte_array_t pin, uint8_t output[32]);
 extern void hash_multi(const_byte_array_t input, uint8_t output[32]);
 extern void hash256(const_byte_array_t input, uint8_t output[32]);
 extern void generic_hash(mbedtls_md_type_t md, const_byte_array_t input, uint8_t *output);
+/* ESP-IDF's Wi-Fi supplicant (used only to set the clock) exports its own aes_encrypt and
+ * aes_decrypt with other signatures. Ours get their own link names so the two never meet. */
+#define aes_encrypt stk_aes_encrypt
+#define aes_decrypt stk_aes_decrypt
 extern int aes_encrypt(const_byte_array_t key, const uint8_t *iv, int mode, byte_array_t data);
 extern int aes_decrypt(const_byte_array_t key, const uint8_t *iv, int mode, byte_array_t data);
 extern int aes_encrypt_cfb_256(const uint8_t *key, const uint8_t *iv, byte_array_t data);

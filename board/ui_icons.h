@@ -12,7 +12,7 @@ namespace cardputer::lcd {
 enum class Glyph : std::uint8_t {
     Key, Codes, Card, Shield, Backup, Settings, Lock, Unlock, Power,
     Volume, Sun, Clock, Trash, Touch, Usb, Battery, Charging, Sd,
-    Warn, Check, Info, Cross, Up, Down, Left, Right, Enter, Backspace,
+    Warn, Check, Info, Cross, Up, Down, Left, Right, Enter, Backspace, Wifi,
 };
 
 namespace detail {
@@ -221,6 +221,12 @@ void draw_icon(Display& d, Glyph g, int x, int y, int size, std::uint16_t fg,
             break;
         case Glyph::Right:
             d.fillTriangle(x + S(18), cy, x + S(7), y + S(5), x + S(7), y + S(19), fg);
+            break;
+        case Glyph::Wifi:   // rising signal bars: a wireless network
+            for (int i = 0; i < 3; ++i) {
+                const int h = S(6 + i * 6);
+                d.fillRoundRect(x + S(3 + i * 7), y + S(21) - h, S(4), h, T(1), fg);
+            }
             break;
     }
 }

@@ -833,7 +833,12 @@ int cbor_make_credential(const uint8_t *data, size_t len) {
     }
 
     bool self_attestation = true;
-    if (enterpriseAttestation == 2 || (ka && ka->use_self_attestation == pfalse)) {
+    /* Linux login (pam_u2f) registers under "pam://<host>". Its pamu2fcfg before 1.2
+     * (Ubuntu 24.04 and Debian 12 ship 1.1) verifies only certificate attestation and fails
+     * with FIDO_ERR_INVALID_ARGUMENT on self attestation. Local logins get the device
+     * certificate; websites keep self attestation, which cannot link accounts across sites. */
+    const bool local_login = rp.id.len >= 6 && memcmp(rp.id.data, "pam://", 6) == 0;
+    if (enterpriseAttestation == 2 || (ka && ka->use_self_attestation == pfalse) || local_login) {
         mbedtls_ecp_keypair_free(&ekey);
         mbedtls_ecp_keypair_init(&ekey);
         uint8_t key[32] = {0};

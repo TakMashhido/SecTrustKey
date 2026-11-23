@@ -4,7 +4,7 @@
 # and rewrite only the pad on every install and update. Devices flashed with v1.0 keep their
 # fido_store partition and remain supported.
 # A full-flash install replaces everything on the chip, so back up the flash first:
-# https://koustav.isroot.in/SecTrustKey/getting-started/install/
+# https://koustavmondal.com/SecTrustKey/getting-started/install/
 # Name,    Type, SubType, Offset,    Size,     Flags
 nvs,       data, nvs,     0x009000,  0x006000,
 otadata,   data, ota,     0x00F000,  0x002000,

@@ -11,7 +11,7 @@ const char* const kMainFooter = kCredit;   // the home screen carries the credit
 const char* const kRequestFooter = "ENT:YES DEL:NO";
 const char* const kEditFooter = "ENT:SAVE DEL:BACK";
 constexpr int kMainCount = 5;
-constexpr int kSettingsCount = 5;   // volume, brightness, timeout, security, about
+constexpr int kSettingsCount = 6;   // volume, brightness, timeout, clock, security, about
 
 // Settings > Security & Backup. Every item reboots into the pre-USB maintenance mode.
 struct SecurityItem {
@@ -346,8 +346,10 @@ void Model::navigate(Keys keys) {
                 settings_index_ = (settings_index_ + 1) % kSettingsCount;
             } else if (enter) {
                 if (settings_index_ == 3) {
-                    screen_ = Screen::Backup;
+                    action_.type = ActionType::ClockSetup;
                 } else if (settings_index_ == 4) {
+                    screen_ = Screen::Backup;
+                } else if (settings_index_ == 5) {
                     screen_ = Screen::About;
                 } else {
                     draft_ = settings_;
@@ -594,7 +596,7 @@ Snapshot Model::view() const {
                     message = "Loading codes"; break;
                 case CodesState::TimeUnknown:
                     message = "Time not set";
-                    detail = "Run stk-time on your computer";
+                    detail = "Settings > Clock: Wi-Fi or type it";
                     break;
                 case CodesState::Protected:
                     message = "Codes are password-protected";
@@ -743,16 +745,25 @@ Snapshot Model::view() const {
             set_line(&all[2], "Screen timeout", false);
             copy_text(all[2].value, sizeof(all[2].value), screen_timeout_labels[settings_.timeout_index]);
             all[2].icon = Icon::Clock;
-            set_line(&all[3], "Security & Backup", false);
-            copy_text(all[3].sub, sizeof(all[3].sub), "Passphrase, SD backup and SD tools");
-            all[3].icon = Icon::Shield;
-            set_line(&all[4], "About", false);
-            copy_text(all[4].sub, sizeof(all[4].sub), "Developer, website and contact");
-            all[4].icon = Icon::Info;
+            set_line(&all[3], "Clock", false);
+            if (bar_.time_known) {
+                std::snprintf(buffer, sizeof(buffer), "%02u:%02u", bar_.hour, bar_.minute);
+            } else {
+                copy_text(buffer, sizeof(buffer), "Not set");
+            }
+            copy_text(all[3].value, sizeof(all[3].value), buffer);
+            copy_text(all[3].sub, sizeof(all[3].sub), "Set over Wi-Fi or type it, for codes");
+            all[3].icon = Icon::Clock;
+            set_line(&all[4], "Security & Backup", false);
+            copy_text(all[4].sub, sizeof(all[4].sub), "Passphrase, SD backup and SD tools");
+            all[4].icon = Icon::Shield;
+            set_line(&all[5], "About", false);
+            copy_text(all[5].sub, sizeof(all[5].sub), "Developer, website and contact");
+            all[5].icon = Icon::Info;
             for (int i = 0; i < kSettingsCount; ++i) {
                 all[i].accent = Accent::Blue;
             }
-            all[3].accent = Accent::Green;
+            all[4].accent = Accent::Green;
             const int visible = 4;
             int first = settings_index_ - visible + 1;
             if (first < 0) {

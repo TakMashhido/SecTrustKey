@@ -477,18 +477,34 @@ void draw_entry(D& d, const Snapshot& snap) {
     d.drawRoundRect(kMargin, kFieldTop, kWidth - 2 * kMargin, kFieldH, 8, color);
     draw_chip(d, snap.icon, kMargin + 5, kFieldTop + 5, 24, 16, accent_tint(snap.accent), color);
     const int dots = static_cast<int>(std::strlen(snap.rows[0].text));
-    for (int i = 0; i < dots && i < 16; ++i) {
-        d.fillCircle(kMargin + 42 + i * 11, kFieldTop + kFieldH / 2, 4, kText);
+    if (snap.rows[0].mono) {
+        // Plain entry (network name, time): show the end of the text and a caret after it.
+        constexpr int kTextX = kMargin + 42;
+        constexpr int kTextW = kWidth - 2 * kMargin - 42 - 10;
+        const char* shown = snap.rows[0].text;
+        while (*shown != '\0' && text_width(d, Font::Body, shown) > kTextW) {
+            ++shown;
+        }
+        const int ty = centre_y(d, Font::Body, kFieldTop, kFieldH);
+        draw_text(d, Font::Body, shown, kTextX, ty, kText, kTextW);
+        const int caret = kTextX + (*shown != '\0' ? text_width(d, Font::Body, shown) + 1 : 0);
+        d.fillRect(caret, kFieldTop + 9, 2, kFieldH - 18, color);
+    } else {
+        for (int i = 0; i < dots && i < 16; ++i) {
+            d.fillCircle(kMargin + 42 + i * 11, kFieldTop + kFieldH / 2, 4, kText);
+        }
     }
-    if (dots == 0) {
+    if (dots == 0 && !snap.rows[0].mono) {
         draw_text(d, Font::Small, "type to begin", kMargin + 42, centre_y(d, Font::Small, kFieldTop, kFieldH),
                   kMuted, 150);
     }
     const int bar_top = kFieldTop + kFieldH + 8;
-    d.fillRoundRect(kMargin, bar_top, kWidth - 2 * kMargin, 6, 3, kSurfaceHi);
-    const int fill = std::clamp(snap.meter, 0, 100) * (kWidth - 2 * kMargin) / 100;
-    if (fill > 0) {
-        d.fillRoundRect(kMargin, bar_top, std::max(fill, 6), 6, 3, color);
+    if (snap.meter >= 0) {   // the strength meter belongs to secrets only
+        d.fillRoundRect(kMargin, bar_top, kWidth - 2 * kMargin, 6, 3, kSurfaceHi);
+        const int fill = std::clamp(snap.meter, 0, 100) * (kWidth - 2 * kMargin) / 100;
+        if (fill > 0) {
+            d.fillRoundRect(kMargin, bar_top, std::max(fill, 6), 6, 3, color);
+        }
     }
     const int row_top = bar_top + 9;
     draw_text(d, Font::Small, snap.value, kMargin, centre_y(d, Font::Small, row_top, 16), color,

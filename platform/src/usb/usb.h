@@ -87,6 +87,10 @@ extern queue_t usb_to_card_q;
 extern queue_t card_to_usb_q;
 
 extern void card_start(uint8_t, void *(*func)(void *));
+#if defined(ESP_PLATFORM) && !defined(ENABLE_EMULATION)
+/* Sets aside core1's command stack before the heap fragments; call once during boot. */
+extern void stk_reserve_core1_stack(void);
+#endif
 extern void card_exit(void);
 extern int card_status(uint8_t itf);
 extern void usb_init(void);

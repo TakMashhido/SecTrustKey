@@ -179,6 +179,12 @@ int main(void) {
     }
 #endif
 
+#if defined(ESP_PLATFORM) && !defined(ENABLE_EMULATION)
+    /* After the unlock (its worker needs 32 KiB of its own), before USB and the file
+     * system split the heap. */
+    stk_reserve_core1_stack();
+#endif
+
     low_flash_init();
 
     file_scan_flash();
@@ -230,7 +236,12 @@ int main(void) {
 #endif
 
 #ifdef ESP_PLATFORM
-    xTaskCreatePinnedToCore(core0_loop, "core0", 4096*ITF_TOTAL*2, NULL, CONFIG_TINYUSB_TASK_PRIORITY - 1, &hcore0, ESP32_CORE0);
+    /* core0 runs the UI pump, USB housekeeping and the flash writer (one 4 KiB page on the
+     * stack). The same UI runs in the 16 KiB main task during boot and maintenance, and its
+     * measured peak here was about 7 KiB, so 16 KiB leaves room for the flash page. The
+     * previous 4096*ITF_TOTAL*2 (32 KiB with four interfaces) only took heap that core1's
+     * command stack needs. Health > Memory shows how much of this stack is still unused. */
+    xTaskCreatePinnedToCore(core0_loop, "core0", 16 * 1024, NULL, CONFIG_TINYUSB_TASK_PRIORITY - 1, &hcore0, ESP32_CORE0);
 #else
     core0_loop(NULL);
 #endif

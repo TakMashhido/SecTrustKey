@@ -45,6 +45,29 @@ RTC_NOINIT_ATTR uint32_t stk_dbg_largest_block;
 RTC_NOINIT_ATTR uint32_t stk_dbg_progress;
 static volatile uint32_t cmd_start_ms = 0;
 
+/* core1's command stack (4096*ITF_TOTAL*2, 32 KiB with four interfaces) must be one
+ * contiguous block. By the time the first command arrives, the display canvas, USB and
+ * Wi-Fi's static data have split the heap: 70 KiB free was seen with no 32 KiB block.
+ * A block is therefore set aside during boot and handed over the first time core1 cannot
+ * be created otherwise. When core1 is replaced its stack returns to the same place. */
+#define STK_CORE1_RESERVE (34 * 1024)
+static void *core1_reserve = NULL;
+
+void stk_reserve_core1_stack(void) {
+    if (core1_reserve == NULL) {
+        core1_reserve = heap_caps_malloc(STK_CORE1_RESERVE, MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+    }
+}
+
+static bool release_core1_reserve(void) {
+    if (core1_reserve == NULL) {
+        return false;
+    }
+    heap_caps_free(core1_reserve);
+    core1_reserve = NULL;
+    return true;
+}
+
 __attribute__((noinline)) static void stk_core1_launch_failed(void) {
     stk_dbg_free_heap = heap_caps_get_free_size(MALLOC_CAP_8BIT);
     stk_dbg_largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
@@ -279,6 +302,9 @@ void card_start(uint8_t itf, void *(*func)(void *)) {
              * moment right after an interface switch. Retry instead of leaving no thread. */
             stk_progress = 0;
             BaseType_t created = multicore_launch_func_core1(func);
+            if (created != pdPASS && release_core1_reserve()) {
+                created = multicore_launch_func_core1(func);
+            }
             for (int attempt = 0; created != pdPASS && attempt < 100; ++attempt) {
                 vTaskDelay(1);
                 created = multicore_launch_func_core1(func);
