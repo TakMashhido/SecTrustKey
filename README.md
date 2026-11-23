@@ -10,13 +10,13 @@
 [![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0-13203a?style=flat-square)](LICENSE)
 [![Hardware](https://img.shields.io/badge/hardware-Cardputer%20ADV-2a5fc4?style=flat-square)](https://docs.m5stack.com/)
 [![ESP-IDF](https://img.shields.io/badge/ESP--IDF-v5.5.3-c4456f?style=flat-square)](https://github.com/espressif/esp-idf)
-[![Docs](https://img.shields.io/badge/docs-koustav.isroot.in-6b4fd8?style=flat-square)](https://koustav.isroot.in/SecTrustKey/)
+[![Docs](https://img.shields.io/badge/docs-koustavmondal.com-6b4fd8?style=flat-square)](https://koustavmondal.com/SecTrustKey/)
 
-[**Documentation**](https://koustav.isroot.in/SecTrustKey/) &nbsp;|&nbsp;
+[**Documentation**](https://koustavmondal.com/SecTrustKey/) &nbsp;|&nbsp;
 [**Download**](https://github.com/TakMashhido/SecTrustKey/releases/latest) &nbsp;|&nbsp;
-[**Install**](https://koustav.isroot.in/SecTrustKey/getting-started/install/) &nbsp;|&nbsp;
-[**User guide**](https://koustav.isroot.in/SecTrustKey/guide/) &nbsp;|&nbsp;
-[**Architecture**](https://koustav.isroot.in/SecTrustKey/concepts/architecture/)
+[**Install**](https://koustavmondal.com/SecTrustKey/getting-started/install/) &nbsp;|&nbsp;
+[**User guide**](https://koustavmondal.com/SecTrustKey/guide/) &nbsp;|&nbsp;
+[**Architecture**](https://koustavmondal.com/SecTrustKey/concepts/architecture/)
 
 </div>
 
@@ -90,7 +90,7 @@ Download `sectrustkey-v1.1.1-cardputer-adv.bin` from the [latest release](https:
 
 | | How |
 |---|---|
-| **M5 Launcher** | Copy the file to the SD card, then in Launcher open **SD**, select it and **Install**. SecTrustKey sits next to your other apps. [Guide](https://koustav.isroot.in/SecTrustKey/getting-started/launcher/) |
+| **M5 Launcher** | Copy the file to the SD card, then in Launcher open **SD**, select it and **Install**. SecTrustKey sits next to your other apps. [Guide](https://koustavmondal.com/SecTrustKey/getting-started/launcher/) |
 | **esptool** | Download mode (power off, hold **G0**, plug in USB, release **G0**), then the command below. Replaces everything on the chip. |
 | **Browser** | Espressif's [browser flasher](https://espressif.github.io/esptool-js/): connect, **Erase Flash**, then program the file at `0x0`. |
 
@@ -99,7 +99,7 @@ pip install esptool
 esptool.py --chip esp32s3 --baud 921600 write_flash --erase-all 0x0 sectrustkey-v1.1.1-cardputer-adv.bin
 ```
 
-On the first start the device may ask **Set up storage?**; press <kbd>Enter</kbd>. Then [secure the device](https://koustav.isroot.in/SecTrustKey/getting-started/first-steps/): change the factory PINs, set a FIDO PIN, and consider a startup passphrase.
+On the first start the device may ask **Set up storage?**; press <kbd>Enter</kbd>. Then [secure the device](https://koustavmondal.com/SecTrustKey/getting-started/first-steps/): change the factory PINs, set a FIDO PIN, and consider a startup passphrase.
 
 > [!CAUTION]
 > In M5 Launcher, **never delete a SecTrustKey entry** unless you mean to erase your keys: Launcher removes the key storage together with the app. To update, just install the new file; it shares the same keys.
@@ -120,7 +120,7 @@ scripts/in-container.sh bash scripts/build.sh -DUSB_VID=0x1209 -DUSB_PID=0x0001 
 scripts/in-container.sh bash scripts/make-image.sh
 ```
 
-The images are written to `build/cardputer-adv/`. See [Build from source](https://koustav.isroot.in/SecTrustKey/getting-started/build/).
+The images are written to `build/cardputer-adv/`. See [Build from source](https://koustavmondal.com/SecTrustKey/getting-started/build/).
 
 </details>
 
@@ -136,12 +136,12 @@ With a startup passphrase, the keys stay sealed until you unlock them on the dev
 
 <img src=".github/assets/diagrams/boot-unlock.png" alt="Boot flow: read the key store, ask for the passphrase if sealed, unlock or wait after a wrong try, then start USB" width="100%">
 
-More in [Architecture](https://koustav.isroot.in/SecTrustKey/concepts/architecture/), [Storage and key store](https://koustav.isroot.in/SecTrustKey/concepts/storage/) and [Boot and unlock](https://koustav.isroot.in/SecTrustKey/concepts/boot/).
+More in [Architecture](https://koustavmondal.com/SecTrustKey/concepts/architecture/), [Storage and key store](https://koustavmondal.com/SecTrustKey/concepts/storage/) and [Boot and unlock](https://koustavmondal.com/SecTrustKey/concepts/boot/).
 
 ## Security
 
 > [!WARNING]
-> The ESP32-S3 is a microcontroller, not a certified secure element. Secure Boot and flash encryption are deliberately not enabled, so without a startup passphrase anyone who can read the chip's flash can copy the keys. Keep a second authenticator on every account that matters, and read the [security model](https://koustav.isroot.in/SecTrustKey/concepts/security/).
+> The ESP32-S3 is a microcontroller, not a certified secure element. Secure Boot and flash encryption are deliberately not enabled, so without a startup passphrase anyone who can read the chip's flash can copy the keys. Keep a second authenticator on every account that matters, and read the [security model](https://koustavmondal.com/SecTrustKey/concepts/security/).
 
 Report security problems privately to **erkoustavkumar@gmail.com**.
 
@@ -149,13 +149,13 @@ Report security problems privately to **erkoustavkumar@gmail.com**.
 
 | Start here | Use it | Understand it |
 |---|---|---|
-| [Install from a release](https://koustav.isroot.in/SecTrustKey/getting-started/install/) | [Passkeys](https://koustav.isroot.in/SecTrustKey/guide/passkeys/) | [Architecture](https://koustav.isroot.in/SecTrustKey/concepts/architecture/) |
-| [Build from source](https://koustav.isroot.in/SecTrustKey/getting-started/build/) | [OpenPGP and GnuPG](https://koustav.isroot.in/SecTrustKey/guide/openpgp/) | [Security model](https://koustav.isroot.in/SecTrustKey/concepts/security/) |
-| [First steps](https://koustav.isroot.in/SecTrustKey/getting-started/first-steps/) | [TOTP codes](https://koustav.isroot.in/SecTrustKey/guide/codes/) | [Custom USB identity](https://koustav.isroot.in/SecTrustKey/customize/usb-identity/) |
-| [Troubleshooting](https://koustav.isroot.in/SecTrustKey/troubleshooting/) | [SD backup](https://koustav.isroot.in/SecTrustKey/guide/backup/) | [Flash layout](https://koustav.isroot.in/SecTrustKey/reference/flash-layout/) |
+| [Install from a release](https://koustavmondal.com/SecTrustKey/getting-started/install/) | [Passkeys](https://koustavmondal.com/SecTrustKey/guide/passkeys/) | [Architecture](https://koustavmondal.com/SecTrustKey/concepts/architecture/) |
+| [Build from source](https://koustavmondal.com/SecTrustKey/getting-started/build/) | [OpenPGP and GnuPG](https://koustavmondal.com/SecTrustKey/guide/openpgp/) | [Security model](https://koustavmondal.com/SecTrustKey/concepts/security/) |
+| [First steps](https://koustavmondal.com/SecTrustKey/getting-started/first-steps/) | [TOTP codes](https://koustavmondal.com/SecTrustKey/guide/codes/) | [Custom USB identity](https://koustavmondal.com/SecTrustKey/customize/usb-identity/) |
+| [Troubleshooting](https://koustavmondal.com/SecTrustKey/troubleshooting/) | [SD backup](https://koustavmondal.com/SecTrustKey/guide/backup/) | [Flash layout](https://koustavmondal.com/SecTrustKey/reference/flash-layout/) |
 
 ## License and credits
 
-Copyright (c) 2026 [Koustav Kumar Mondal](https://koustav.isroot.in/). Licensed under the [GNU Affero General Public License v3.0](LICENSE); see [NOTICE.md](NOTICE.md) for incorporated software and changes.
+Copyright (c) 2026 [Koustav Kumar Mondal](https://koustavmondal.com/). Licensed under the [GNU Affero General Public License v3.0](LICENSE); see [NOTICE.md](NOTICE.md) for incorporated software and changes.
 
 SecTrustKey builds on [Pico FIDO](https://github.com/polhenarejos/pico-fido), [Pico OpenPGP](https://github.com/polhenarejos/pico-openpgp) and the [Pico Keys SDK](https://github.com/polhenarejos/pico-keys-sdk) by Pol Henarejos, and on the [Cardputer ADV port](https://github.com/lessucettes/cardputer-fido-adv) by lessucettes.
