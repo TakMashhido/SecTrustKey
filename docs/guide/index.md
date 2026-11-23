@@ -25,12 +25,16 @@ Reader setup, PINs, key generation, touch policy. [Read →](openpgp.md)
 gpg-agent as your SSH agent, signed commits. [Read →](ssh-git.md)
 </div>
 <div class="stk-card" markdown>
+### :material-penguin: Linux login
+Approve sudo and logins with pam_u2f. [Read →](linux-login.md)
+</div>
+<div class="stk-card" markdown>
 ### :material-card-account-details-outline: PIV smart card
 Change PIN, PUK and management key; generate certificates. [Read →](piv.md)
 </div>
 <div class="stk-card" markdown>
 ### :material-timer-outline: TOTP codes
-Add accounts, set the clock, reveal touch-only codes. [Read →](codes.md)
+Add accounts, set the clock over Wi-Fi or by hand, reveal touch-only codes. [Read →](codes.md)
 </div>
 <div class="stk-card" markdown>
 ### :material-stethoscope: Health check

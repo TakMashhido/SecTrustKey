@@ -7,6 +7,21 @@ description: SecTrustKey release notes and the feature checklist of each version
 
 Downloads are on the [GitHub releases page](https://github.com/TakMashhido/SecTrustKey/releases).
 
+## v1.2.0: clock on the device, Linux login
+
+- [x] **Settings → Clock**: set the time over Wi-Fi or type it; on-screen codes no longer need a script on the computer
+- [x] Choose a network from a scan, type a hidden one, or forget the saved one; optional **Sync at start**
+- [x] **Time zone** for the status-bar clock and typed times
+- [x] The time survives the restarts into backup, passphrase and clock screens
+- [x] [Linux login](guide/linux-login.md): `pamu2fcfg` 1.1 (Ubuntu 24.04, Debian 12) accepts SecTrustKey; `pam://` registrations carry the device certificate
+- [x] Health → Memory also shows the screen task's free stack
+- [x] The website moved to **koustavmondal.com**: About page, QR code and links; these docs are now at https://koustavmondal.com/SecTrustKey/
+- [x] Tested on a Cardputer ADV: FIDO2, OpenPGP, FIDO/smart-card switching under `pcscd`, `pamu2fcfg`, Wi-Fi sync, time zone
+
+Wi-Fi runs only in the Clock restart before USB starts, and the device restarts afterwards. WPA2 and mixed WPA2/WPA3 networks work; WPA3-only networks do not. Linking the Wi-Fi code left the heap without a 32 KB block for the command task, so that block is now reserved at start-up and the screen task's stack is smaller (16 KB; about 7 KB used).
+
+**Updating:** install `sectrustkey-v1.2.0-cardputer-adv.bin` from M5 Launcher or M5Burner, or write `sectrustkey-v1.2.0-app.bin` at `0x20000` with esptool. Your keys are kept.
+
 ## v1.1.1: startup passphrase fix
 
 - [x] Setting, changing or removing the startup passphrase works again. The device used to restart as soon as you approved the warning, so no passphrase was saved.

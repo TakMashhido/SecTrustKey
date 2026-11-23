@@ -49,7 +49,7 @@ Keep both files somewhere safe. [Roll back](#roll-back) explains how to write it
 
     ```bash
     esptool.py --chip esp32s3 --baud 921600 --after watchdog_reset \
-      write_flash --erase-all 0x0 sectrustkey-v1.1.1-cardputer-adv.bin
+      write_flash --erase-all 0x0 sectrustkey-v1.2.0-cardputer-adv.bin
     ```
 
     `--erase-all` clears the whole chip, so the key storage starts empty. Without it, the first start shows **Set up storage?** and waits for ++enter++ before preparing the area. `--after watchdog_reset` starts the firmware when flashing is done; on this board a reset through the serial line would leave it in download mode.
@@ -59,7 +59,7 @@ Keep both files somewhere safe. [Roll back](#roll-back) explains how to write it
     1. Open Espressif's [esptool-js flasher](https://espressif.github.io/esptool-js/) in Chrome or Edge.
     2. Choose **Connect** and pick the Espressif serial device.
     3. Choose **Erase Flash** and wait for it to finish.
-    4. Add the file `sectrustkey-v1.1.1-cardputer-adv.bin` at address **`0x0`** and choose **Program**.
+    4. Add the file `sectrustkey-v1.2.0-cardputer-adv.bin` at address **`0x0`** and choose **Program**.
     5. Unplug and plug the Cardputer back in.
 
 === "Docker"
@@ -67,7 +67,7 @@ Keep both files somewhere safe. [Roll back](#roll-back) explains how to write it
     ```bash
     docker run --rm --device=/dev/ttyACM0 -v "$PWD":/fw espressif/idf:v5.5.3 \
       esptool.py --chip esp32s3 --port /dev/ttyACM0 --baud 921600 --after watchdog_reset \
-      write_flash --erase-all 0x0 /fw/sectrustkey-v1.1.1-cardputer-adv.bin
+      write_flash --erase-all 0x0 /fw/sectrustkey-v1.2.0-cardputer-adv.bin
     ```
 
 When it restarts you see the boot screen, then the home screen. The first boot creates the device identity: two random master keys stored in the [key store](../concepts/storage.md).
@@ -83,7 +83,7 @@ Updates write only the firmware at `0x20000`. The key storage is a separate part
 
 ```bash
 esptool.py --chip esp32s3 --baud 921600 --after watchdog_reset \
-  write_flash 0x20000 sectrustkey-v1.1.1-app.bin
+  write_flash 0x20000 sectrustkey-v1.2.0-app.bin
 ```
 
 !!! tip "Back up before every update"

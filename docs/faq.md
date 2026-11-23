@@ -21,7 +21,7 @@ description: Frequently asked questions about SecTrustKey — hardware support, 
     The keys cannot be recovered from the device. Restore an SD backup made **before** the passphrase was set, or erase and set the device up again. Wrong guesses never wipe anything, so there is no harm in trying.
 
 ??? question "Does the device need a battery?"
-    No, it runs from USB. The battery lets you read TOTP codes away from a computer, but the clock must be set after each power-up.
+    No, it runs from USB. The battery lets you read TOTP codes away from a computer, but the clock must be set after each power-up: **Settings → Clock**, or turn on *Sync at start*.
 
 ??? question "Can I change the USB name and ID?"
     Yes, at build time. See [USB identity](customize/usb-identity.md).

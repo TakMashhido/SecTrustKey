@@ -5,7 +5,7 @@ description: SecTrustKey is licensed under the GNU AGPL v3.0 and builds on Pico 
 
 # License and credits
 
-SecTrustKey is copyright © 2026 [Koustav Kumar Mondal](https://koustav.isroot.in/) and licensed under the [GNU Affero General Public License v3.0](https://github.com/TakMashhido/SecTrustKey/blob/main/LICENSE).
+SecTrustKey is copyright © 2026 [Koustav Kumar Mondal](https://koustavmondal.com/) and licensed under the [GNU Affero General Public License v3.0](https://github.com/TakMashhido/SecTrustKey/blob/main/LICENSE).
 
 `NOTICE.md` in the repository lists the incorporated software, its licences and what was changed.
 
@@ -23,4 +23,4 @@ SecTrustKey is copyright © 2026 [Koustav Kumar Mondal](https://koustav.isroot.i
 
 ## Contact
 
-Koustav Kumar Mondal, [koustav.isroot.in](https://koustav.isroot.in/), [erkoustavkumar@gmail.com](mailto:erkoustavkumar@gmail.com).
+Koustav Kumar Mondal, [koustavmondal.com](https://koustavmondal.com/), [erkoustavkumar@gmail.com](mailto:erkoustavkumar@gmail.com).

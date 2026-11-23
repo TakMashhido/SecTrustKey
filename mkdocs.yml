@@ -2,9 +2,9 @@
 #   pip install -r requirements.txt
 #   mkdocs serve                          # live preview on http://127.0.0.1:8088
 #   mkdocs build --strict                 # static site in ./site
-# Published at https://koustav.isroot.in/SecTrustKey/ by .github/workflows/deploy.yml
+# Published at https://koustavmondal.com/SecTrustKey/ by .github/workflows/deploy.yml
 site_name: SecTrustKey
-site_url: https://koustav.isroot.in/SecTrustKey/
+site_url: https://koustavmondal.com/SecTrustKey/
 repo_url: https://github.com/TakMashhido/SecTrustKey
 repo_name: TakMashhido/SecTrustKey
 edit_uri: ""                            # the pages live on the docs branch, not next to the firmware
@@ -108,7 +108,7 @@ extra:
       link: https://github.com/TakMashhido/SecTrustKey
       name: SecTrustKey on GitHub
     - icon: material/web
-      link: https://koustav.isroot.in/
+      link: https://koustavmondal.com/
       name: Koustav Kumar Mondal
     - icon: material/email
       link: mailto:erkoustavkumar@gmail.com
@@ -128,6 +128,7 @@ nav:
       - Passkeys (FIDO2): guide/passkeys.md
       - OpenPGP and GnuPG: guide/openpgp.md
       - SSH and Git signing: guide/ssh-git.md
+      - Linux login (pam_u2f): guide/linux-login.md
       - PIV smart card: guide/piv.md
       - TOTP codes: guide/codes.md
       - Health check: guide/health.md

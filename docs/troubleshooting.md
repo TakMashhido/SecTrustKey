@@ -40,13 +40,22 @@ description: Fix common SecTrustKey problems — flashing and download mode, gpg
 ??? question "The browser asks for a PIN you never set"
     Another program or browser tab has an open security-key request. Cancel it and try again.
 
+??? question "`pamu2fcfg` fails with `fido_cred_verify (-7) FIDO_ERR_INVALID_ARGUMENT`"
+    Update to v1.2.0 or later: older firmware sent self attestation, which `pamu2fcfg` 1.1 rejects. See [Linux login](guide/linux-login.md).
+
 ??? question "FIDO reset is refused"
     A reset is only accepted within 10 seconds of plugging the device in. Unplug, replug and start the reset straight away.
 
 ## Codes
 
 ??? question "Codes shows *Time not set*"
-    The clock is lost at every power-off. Run [`stk-time.py`](reference/stk-time.md).
+    The clock is lost at every power-off. Set it under **Settings → Clock** (Wi-Fi or *Type the time*), turn on **Sync at start**, or run [`stk-time.py`](reference/stk-time.md).
+
+??? question "Clock not set: *Wrong password?* or *Network not found*"
+    Check the password (it is shown as you type) and that the network is 2.4 GHz. WPA3-only networks are not supported; switch the router or hotspot to WPA2 or WPA2/WPA3.
+
+??? question "Clock not set: *No answer from time server*"
+    The network joined but `pool.ntp.org` and `time.cloudflare.com` did not answer, often a captive portal or a network that blocks NTP (UDP port 123). Use another network or *Type the time*.
 
 ??? question "Codes says the codes are password-protected"
     The OATH application has an access password, so codes are not shown on screen. Use `ykman oath accounts code` instead, or remove the password.

@@ -7,7 +7,7 @@ description: stk-time.py sets the SecTrustKey clock over PC/SC so TOTP codes can
 
 [Download `stk-time.py`](../assets/downloads/stk-time.py){ .md-button }
 
-The Cardputer has no battery-backed clock. `stk-time.py` sets it from your computer so [TOTP codes](../guide/codes.md) can be shown on the screen.
+The Cardputer has no battery-backed clock. Since v1.2.0 the device sets it itself under **Settings → Clock** (Wi-Fi or typed; see [TOTP codes](../guide/codes.md#set-the-clock)). `stk-time.py` remains an alternative that sets it from your computer over PC/SC.
 
 ```bash
 pip install pyscard          # needs pcscd on Linux

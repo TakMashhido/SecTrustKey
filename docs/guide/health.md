@@ -26,4 +26,4 @@ The **Health** tile scores how well the device is set up. It never spends a PIN 
 | PIV PINs | Neither the PIN nor the PUK is the factory value | [PIV](piv.md#change-the-factory-secrets) |
 | SD backup | A backup was saved and verified on this device | [SD backup](backup.md) |
 
-Below the score, **Clock**, **Memory** (free heap), uptime and the **Firmware** build are shown for information.
+Below the score, **Clock**, **Memory** (free heap, the largest free block, and how much of the screen task's stack is unused), uptime and the **Firmware** build are shown for information. If **Clock** reads *Unknown*, set it under **Settings → Clock**.

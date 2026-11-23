@@ -14,7 +14,7 @@ hide:
 
 [Install from a release](getting-started/install.md){ .md-button .md-button--primary }
 [User guide](guide/index.md){ .md-button }
-[Download v1.1.1](https://github.com/TakMashhido/SecTrustKey/releases/latest){ .md-button }
+[Download v1.2.0](https://github.com/TakMashhido/SecTrustKey/releases/latest){ .md-button }
 
 *Koustav Kumar Mondal · erkoustavkumar@gmail.com*
 
@@ -88,7 +88,7 @@ One firmware presents four USB interfaces. Each request runs on a single command
 ```bash
 pip install esptool
 # Cardputer in download mode: power off, hold G0, plug in USB, release G0
-esptool.py --chip esp32s3 --baud 921600 write_flash --erase-all 0x0 sectrustkey-v1.1.1-cardputer-adv.bin
+esptool.py --chip esp32s3 --baud 921600 write_flash --erase-all 0x0 sectrustkey-v1.2.0-cardputer-adv.bin
 ```
 
 The full walk-through, including a backup of what is on the Cardputer now, is in [Install from a release](getting-started/install.md). Already using **M5 Launcher**? Install the same file from its SD menu and keep your other apps: [M5 Launcher and M5Burner](getting-started/launcher.md).
