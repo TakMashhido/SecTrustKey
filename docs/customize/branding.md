@@ -21,7 +21,7 @@ description: Change the developer name, website, e-mail, GitHub link and QR code
 ```cpp
 inline constexpr const char* kAboutName = "Koustav Kumar Mondal";
 inline constexpr const char* kAboutWebsite = "koustavmondal.com";
-inline constexpr const char* kAboutEmail = "erkoustavkumar@gmail.com";
+inline constexpr const char* kAboutEmail = "koustav@koustavmondal.com";
 inline constexpr const char* kAboutRepo = "github.com/TakMashhido/SecTrustKey";
 inline constexpr const char* kAboutQr = "https://koustavmondal.com";
 inline constexpr const char* kCredit = "Developed by Koustav Kumar Mondal";

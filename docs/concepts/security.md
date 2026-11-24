@@ -36,4 +36,4 @@ The startup passphrase is stretched with PBKDF2-HMAC-SHA256 at a cost calibrated
 
 ## Reporting a problem
 
-Report security issues privately to [erkoustavkumar@gmail.com](mailto:erkoustavkumar@gmail.com) rather than in a public issue.
+Report security issues privately to [koustav@koustavmondal.com](mailto:koustav@koustavmondal.com) rather than in a public issue.

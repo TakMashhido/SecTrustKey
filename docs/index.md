@@ -16,8 +16,6 @@ hide:
 [User guide](guide/index.md){ .md-button }
 [Download v1.2.0](https://github.com/TakMashhido/SecTrustKey/releases/latest){ .md-button }
 
-*Koustav Kumar Mondal · erkoustavkumar@gmail.com*
-
 </div>
 
 ![SecTrustKey home screen and a FIDO sign-in prompt for github.com](assets/banner.png)

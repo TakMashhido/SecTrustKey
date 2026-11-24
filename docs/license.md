@@ -23,4 +23,4 @@ SecTrustKey is copyright © 2026 [Koustav Kumar Mondal](https://koustavmondal.co
 
 ## Contact
 
-Koustav Kumar Mondal, [koustavmondal.com](https://koustavmondal.com/), [erkoustavkumar@gmail.com](mailto:erkoustavkumar@gmail.com).
+Koustav Kumar Mondal, [koustavmondal.com](https://koustavmondal.com/), [koustav@koustavmondal.com](mailto:koustav@koustavmondal.com).
