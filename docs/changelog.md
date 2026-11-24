@@ -7,6 +7,15 @@ description: SecTrustKey release notes and the feature checklist of each version
 
 Downloads are on the [GitHub releases page](https://github.com/TakMashhido/SecTrustKey/releases).
 
+## v1.2.1: new contact details
+
+- [x] The About page shows **koustavmondal.com** and **koustav@koustavmondal.com**; the QR code opens the new website
+- [x] Tested on a Cardputer ADV: full erase, install, FIDO2
+
+After a fresh install that erases the device (M5Burner, or esptool with `--erase-all`), unplug and replug the Cardputer once before using GnuPG or PIV; until then the smart-card interface may not respond.
+
+**Updating:** install `sectrustkey-v1.2.1-cardputer-adv.bin` from M5 Launcher or M5Burner, or write `sectrustkey-v1.2.1-app.bin` at `0x20000` with esptool. Your keys are kept.
+
 ## v1.2.0: clock on the device, Linux login
 
 - [x] **Settings → Clock**: set the time over Wi-Fi or type it; on-screen codes no longer need a script on the computer
