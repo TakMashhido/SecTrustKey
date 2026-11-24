@@ -145,7 +145,7 @@ More in [Architecture](https://koustavmondal.com/SecTrustKey/concepts/architectu
 > [!WARNING]
 > The ESP32-S3 is a microcontroller, not a certified secure element. Secure Boot and flash encryption are deliberately not enabled, so without a startup passphrase anyone who can read the chip's flash can copy the keys. Keep a second authenticator on every account that matters, and read the [security model](https://koustavmondal.com/SecTrustKey/concepts/security/).
 
-Report security problems privately to **erkoustavkumar@gmail.com**.
+Report security problems privately to **koustav@koustavmondal.com**.
 
 ## Documentation
 
